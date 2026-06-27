@@ -14,10 +14,14 @@ import { useCart } from "@/lib/store/cart";
 import { formatBDT } from "@/lib/format";
 import { DEFAULTS } from "@/lib/constants";
 
-export function CartSheet() {
+export function CartSheet({
+  freeShipThreshold = DEFAULTS.freeShipThreshold,
+}: {
+  freeShipThreshold?: number;
+}) {
   const { lines, isOpen, setOpen, setQty, remove, subtotal } = useCart();
   const sub = subtotal();
-  const remaining = DEFAULTS.freeShipThreshold - sub;
+  const remaining = freeShipThreshold - sub;
 
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>

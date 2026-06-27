@@ -91,7 +91,10 @@ export interface Profile {
   avatar_url: string | null;
   role: Role;
   loyalty_points: number;
+  is_blocked: boolean;
+  notes: string | null;
   created_at: string;
+  updated_at?: string;
   email?: string;
 }
 
@@ -153,6 +156,7 @@ export interface Order {
   gift_message: string | null;
   ssl_transaction_id: string | null;
   paperfly_tracking_id: string | null;
+  paperfly_attempts: number;
   admin_notes: string | null;
   recipient: string;
   phone: string;
@@ -183,6 +187,7 @@ export interface Review {
   created_at: string;
   author_name?: string;
   product_name?: string;
+  viewer_voted?: boolean;
 }
 
 export interface PromoCode {
@@ -268,7 +273,7 @@ export interface AuditEntry {
 }
 
 export interface StoreSettings {
-  id: string;
+  id: boolean;
   store_name: string;
   contact_email: string;
   contact_phone: string;
@@ -276,8 +281,8 @@ export interface StoreSettings {
   gift_wrap_fee: number;
   loyalty_earn_rate: number;
   tax_rate: number;
-  payment_provider: "mock" | "live";
-  logistics_provider: "mock" | "live";
+  payment_provider: string;
+  logistics_provider: string;
   low_stock_threshold: number;
   updated_at: string;
 }

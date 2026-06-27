@@ -29,7 +29,10 @@ export function ReviewModeration({ id, status }: { id: string; status: string })
         </button>
       )}
       <button
-        onClick={() => start(async () => { await deleteReview(id); toast.success("Deleted"); })}
+        onClick={() => {
+          if (!confirm("Delete this review permanently?")) return;
+          start(async () => { await deleteReview(id); toast.success("Deleted"); });
+        }}
         disabled={pending}
         className="text-muted hover:text-rose"
       >

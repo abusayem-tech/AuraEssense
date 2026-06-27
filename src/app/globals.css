@@ -6,6 +6,8 @@
    =========================================================================== */
 
 :root {
+  color-scheme: dark;
+
   --onyx: #0b0b0c;
   --onyx-soft: #121214;
   --onyx-raised: #18181b;
@@ -19,8 +21,37 @@
   --line: rgba(245, 241, 233, 0.1);
   --line-strong: rgba(245, 241, 233, 0.18);
 
+  /* Mode-specific surfaces referenced by hardcoded UI (scrollbar, etc.) */
+  --scrollbar-thumb: #2a2a2e;
+  --scrollbar-thumb-hover: #3a3a3f;
+
   --background: var(--onyx);
   --foreground: var(--ivory);
+}
+
+/* ---------------------------------------------------------------------------
+   Light mode — warm ivory base, onyx text, deeper champagne gold accent.
+   Token names stay semantic (onyx = surface, ivory = text) so every
+   component that uses bg-onyx / text-ivory flips automatically.
+   --------------------------------------------------------------------------- */
+.light {
+  color-scheme: light;
+
+  --onyx: #f6f3ec;
+  --onyx-soft: #efe9dd;
+  --onyx-raised: #e7e0d1;
+  --ivory: #17171a;
+  --ivory-dim: #514d44;
+  --muted: #7a7468;
+  --gold: #9c7c3e;
+  --gold-soft: #876a32;
+  --rose: #9c6b6b;
+  --emerald: #3d6657;
+  --line: rgba(20, 18, 14, 0.12);
+  --line-strong: rgba(20, 18, 14, 0.2);
+
+  --scrollbar-thumb: #cdc6b6;
+  --scrollbar-thumb-hover: #b9b1a0;
 }
 
 @theme inline {
@@ -35,6 +66,7 @@
   --color-rose: var(--rose);
   --color-emerald: var(--emerald);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -129,11 +161,11 @@ body {
   background: var(--onyx);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2e;
+  background: var(--scrollbar-thumb);
   border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3f;
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Animations --------------------------------------------------------------- */

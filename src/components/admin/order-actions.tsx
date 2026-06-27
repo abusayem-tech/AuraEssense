@@ -21,7 +21,14 @@ export function OrderActions({
   note: string;
 }) {
   const [pending, start] = useTransition();
-  const [sel, setSel] = useState<OrderStatus>(status);
+  // "paid" and "refunded" are excluded — they run through dedicated flows
+  // (payment webhook / Refund) so their settlement side-effects always apply.
+  const manualStatuses = ORDER_STATUS.filter(
+    (s) => s !== "paid" && s !== "refunded",
+  );
+  const [sel, setSel] = useState<OrderStatus>(
+    status !== "paid" && status !== "refunded" ? status : "processing",
+  );
   const [noteText, setNoteText] = useState(note);
 
   return (
@@ -74,7 +81,7 @@ export function OrderActions({
             onChange={(e) => setSel(e.target.value as OrderStatus)}
             className="h-10 flex-1 border border-line-strong bg-onyx-soft px-3 text-sm capitalize text-ivory focus:border-gold focus:outline-none"
           >
-            {ORDER_STATUS.map((s) => (
+            {manualStatuses.map((s) => (
               <option key={s} value={s}>{s.replace("_", " ")}</option>
             ))}
           </select>
@@ -114,12 +121,15 @@ export function OrderActions({
             variant="danger"
             className="w-full"
             disabled={pending}
-            onClick={() =>
+            onClick={() => {
+              if (!confirm("Refund this order and restore stock? This cannot be undone."))
+                return;
               start(async () => {
-                await refundOrder(orderId);
-                toast.success("Order refunded; stock restored.");
-              })
-            }
+                const res = await refundOrder(orderId);
+                if (res.ok) toast.success("Order refunded; stock restored.");
+                else toast.error(res.error ?? "Could not refund order.");
+              });
+            }}
           >
             <RotateCcw size={14} /> Refund Order
           </Button>

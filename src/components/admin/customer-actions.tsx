@@ -70,12 +70,16 @@ export function CustomerActions({
           variant="outline"
           className="w-full"
           disabled={pending}
-          onClick={() =>
+          onClick={() => {
+            const next = role === "admin" ? "customer" : "admin";
+            if (next === "customer" && !confirm("Revoke admin access for this user?"))
+              return;
             start(async () => {
-              await setCustomerRole(userId, role === "admin" ? "customer" : "admin");
-              toast.success("Role updated");
-            })
-          }
+              const res = await setCustomerRole(userId, next);
+              if (res.ok) toast.success("Role updated");
+              else toast.error(res.error ?? "Could not update role.");
+            });
+          }}
         >
           {role === "admin" ? <ShieldOff size={14} /> : <ShieldCheck size={14} />}
           {role === "admin" ? "Revoke Admin" : "Grant Admin"}
@@ -86,8 +90,9 @@ export function CustomerActions({
           disabled={pending}
           onClick={() =>
             start(async () => {
-              await toggleBlockCustomer(userId);
-              toast.success(isBlocked ? "Customer unblocked" : "Customer blocked");
+              const res = await toggleBlockCustomer(userId);
+              if (res.ok) toast.success(isBlocked ? "Customer unblocked" : "Customer blocked");
+              else toast.error(res.error ?? "Could not update customer.");
             })
           }
         >

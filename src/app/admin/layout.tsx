@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Bell, ExternalLink, Menu } from "lucide-react";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -47,6 +48,7 @@ export default async function AdminLayout({
             </span>
           </div>
           <div className="flex items-center gap-5">
+            <ThemeToggle />
             <Link
               href="/admin/notifications"
               className="relative text-ivory-dim hover:text-gold"

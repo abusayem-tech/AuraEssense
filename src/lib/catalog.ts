@@ -53,8 +53,14 @@ export function parseFilters(
     season: toArray(sp.season),
     occasion: toArray(sp.occasion),
     notes: toArray(sp.notes),
-    priceMin: sp.priceMin ? Number(sp.priceMin) : undefined,
-    priceMax: sp.priceMax ? Number(sp.priceMax) : undefined,
+    priceMin:
+      sp.priceMin && Number.isFinite(Number(sp.priceMin))
+        ? Number(sp.priceMin)
+        : undefined,
+    priceMax:
+      sp.priceMax && Number.isFinite(Number(sp.priceMax))
+        ? Number(sp.priceMax)
+        : undefined,
     samples: sp.samples === "1",
     sort: (sp.sort as CatalogFilters["sort"]) ?? "featured",
     page: sp.page ? Math.max(1, Number(sp.page)) : 1,
@@ -84,13 +90,20 @@ export async function getCatalog(
     familyIds = (data ?? []).map((f) => (f as { id: string }).id);
   }
 
+  // Sentinel that matches no rows — used when a requested brand/family slug
+  // resolves to zero ids, so the filter yields an empty set (not all products).
+  const NONE = "00000000-0000-0000-0000-000000000000";
+
   let query = supabase
     .from("products")
     .select(PRODUCT_SELECT)
+    .order("position", { referencedTable: "product_images", ascending: true })
     .eq("is_active", true);
 
-  if (brandIds.length) query = query.in("brand_id", brandIds);
-  if (familyIds.length) query = query.in("family_id", familyIds);
+  if (filters.brand?.length)
+    query = query.in("brand_id", brandIds.length ? brandIds : [NONE]);
+  if (filters.family?.length)
+    query = query.in("family_id", familyIds.length ? familyIds : [NONE]);
   if (filters.gender?.length) query = query.in("gender", filters.gender);
   if (filters.concentration?.length)
     query = query.in("concentration", filters.concentration);
@@ -153,13 +166,15 @@ export async function getAllNotes(): Promise<string[]> {
     .eq("is_active", true);
   const set = new Set<string>();
   for (const row of (data ?? []) as Array<{
-    top_notes: string[];
-    heart_notes: string[];
-    base_notes: string[];
+    top_notes: string[] | null;
+    heart_notes: string[] | null;
+    base_notes: string[] | null;
   }>) {
-    [...row.top_notes, ...row.heart_notes, ...row.base_notes].forEach((n) =>
-      set.add(n),
-    );
+    [
+      ...(row.top_notes ?? []),
+      ...(row.heart_notes ?? []),
+      ...(row.base_notes ?? []),
+    ].forEach((n) => set.add(n));
   }
   return Array.from(set).sort();
 }

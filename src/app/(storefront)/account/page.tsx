@@ -11,22 +11,22 @@ export default async function AccountOverview() {
   const profile = await getProfile();
   const supabase = await createClient();
 
-  const [{ data: orders }, { count: wishCount }] = await Promise.all([
-    supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(3),
-    supabase
-      .from("wishlists")
-      .select("product_id", { count: "exact", head: true }),
-  ]);
+  const [{ data: orders }, { count: orderCount }, { count: wishCount }] =
+    await Promise.all([
+      supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(3),
+      supabase.from("orders").select("id", { count: "exact", head: true }),
+      supabase.from("wishlists").select("product_id", { count: "exact", head: true }),
+    ]);
 
   const recent = (orders as unknown as Order[]) ?? [];
 
   const stats = [
     { icon: Sparkles, label: "Reward Points", value: profile?.loyalty_points ?? 0, href: "/account/loyalty" },
-    { icon: Package, label: "Orders", value: recent.length, href: "/account/orders" },
+    { icon: Package, label: "Orders", value: orderCount ?? 0, href: "/account/orders" },
     { icon: Heart, label: "Wishlist", value: wishCount ?? 0, href: "/account/wishlist" },
   ];
 

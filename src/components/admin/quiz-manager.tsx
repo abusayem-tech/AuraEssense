@@ -72,7 +72,7 @@ export function QuizManager({ questions }: { questions: Question[] }) {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => { setQEdit(q); setQDialog(true); }} className="text-muted hover:text-gold"><Pencil size={15} /></button>
-                <button onClick={() => start(async () => { await deleteQuestion(q.id); toast.success("Deleted"); })} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={15} /></button>
+                <button onClick={() => { if (!confirm("Delete this question and its options?")) return; start(async () => { await deleteQuestion(q.id); toast.success("Deleted"); }); }} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={15} /></button>
               </div>
             </div>
 
@@ -87,7 +87,7 @@ export function QuizManager({ questions }: { questions: Question[] }) {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => { setOEdit(o); setOQuestionId(q.id); setODialog(true); }} className="text-muted hover:text-gold"><Pencil size={13} /></button>
-                    <button onClick={() => start(async () => { await deleteOption(o.id); toast.success("Deleted"); })} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={13} /></button>
+                    <button onClick={() => { if (!confirm("Delete this option?")) return; start(async () => { await deleteOption(o.id); toast.success("Deleted"); }); }} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={13} /></button>
                   </div>
                 </div>
               ))}

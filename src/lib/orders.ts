@@ -237,16 +237,12 @@ export async function createOrderFromCart(
     note: "Order placed, awaiting payment.",
   });
 
-  // Stash applied gift card / loyalty for settlement on payment success.
-  // (Stored in admin_notes as a lightweight settlement memo.)
+  // Stash applied gift card / loyalty for settlement on payment success in a
+  // dedicated column (kept separate from human-facing admin_notes).
   await supabase
     .from("orders")
     .update({
-      admin_notes: JSON.stringify({
-        giftCardCode,
-        giftApplied,
-        loyaltyApplied,
-      }),
+      settlement_memo: { giftCardCode, giftApplied, loyaltyApplied },
     })
     .eq("id", orderRow.id);
 
@@ -272,22 +268,32 @@ export async function markOrderPaid(orderId: string, transactionId: string) {
   const o = order as Record<string, unknown> & {
     status: string;
     user_id: string | null;
+    subtotal: number;
     total: number;
     promo_code: string | null;
-    admin_notes: string | null;
+    settlement_memo: {
+      giftCardCode?: string | null;
+      giftApplied?: number;
+      loyaltyApplied?: number;
+    } | null;
     items: Array<{ variant_id: string | null; qty: number }>;
   };
-  if (o.status === "paid") return; // idempotent
+  if (o.status === "paid") return; // fast-path idempotency
 
-  await supabase
+  // Atomic transition: only one concurrent caller (e.g. retried IPN) can flip
+  // pending -> paid, preventing double stock/loyalty/promo settlement.
+  const { data: claimed } = await supabase
     .from("orders")
     .update({
       status: "paid",
       paid_at: new Date().toISOString(),
       ssl_transaction_id: transactionId,
-      admin_notes: null,
+      settlement_memo: null,
     })
-    .eq("id", orderId);
+    .eq("id", orderId)
+    .eq("status", "pending")
+    .select("id");
+  if (!claimed || claimed.length === 0) return; // already settled by another call
 
   await supabase.from("order_events").insert({
     order_id: orderId,
@@ -305,33 +311,33 @@ export async function markOrderPaid(orderId: string, transactionId: string) {
       });
   }
 
-  // Settle gift card + loyalty redemption from memo.
+  // Settle gift card + loyalty redemption from the settlement memo.
   try {
-    const memo = o.admin_notes ? JSON.parse(o.admin_notes) : null;
-    if (memo?.giftCardCode && memo.giftApplied > 0) {
+    const memo = o.settlement_memo;
+    if (memo?.giftCardCode && (memo.giftApplied ?? 0) > 0) {
       const { data: gc } = await supabase
         .from("gift_cards")
         .select("balance")
         .eq("code", memo.giftCardCode)
         .maybeSingle();
       const bal = (gc as { balance: number } | null)?.balance ?? 0;
-      const newBal = Math.max(0, bal - memo.giftApplied);
+      const newBal = Math.max(0, bal - (memo.giftApplied ?? 0));
       await supabase
         .from("gift_cards")
         .update({ balance: newBal, status: newBal === 0 ? "depleted" : "active" })
         .eq("code", memo.giftCardCode);
     }
-    if (o.user_id && memo?.loyaltyApplied > 0) {
+    if (o.user_id && (memo?.loyaltyApplied ?? 0) > 0) {
       await supabase.from("loyalty_transactions").insert({
         user_id: o.user_id,
         order_id: orderId,
-        points: -memo.loyaltyApplied,
+        points: -(memo!.loyaltyApplied ?? 0),
         reason: "Redeemed at checkout",
       });
-      await adjustLoyalty(o.user_id, -memo.loyaltyApplied);
+      await adjustLoyalty(o.user_id, -(memo!.loyaltyApplied ?? 0));
     }
   } catch {
-    /* ignore memo parse errors */
+    /* ignore settlement errors */
   }
 
   // Increment promo usage.
@@ -348,9 +354,9 @@ export async function markOrderPaid(orderId: string, transactionId: string) {
         .eq("code", o.promo_code);
   }
 
-  // Award loyalty points.
+  // Award loyalty points on the merchandise subtotal (not shipping/gift wrap).
   if (o.user_id) {
-    const earned = Math.round(o.total * settings.loyaltyEarnRate);
+    const earned = Math.round(o.subtotal * settings.loyaltyEarnRate);
     if (earned > 0) {
       await supabase.from("loyalty_transactions").insert({
         user_id: o.user_id,

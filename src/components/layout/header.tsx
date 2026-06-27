@@ -15,6 +15,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { CommandSearch } from "@/components/search/command-search";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header({
   isAuthed,
@@ -60,20 +61,20 @@ export function Header({
             : "bg-transparent border-b border-transparent",
         )}
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:h-20">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 xl:h-20">
           {/* Mobile menu */}
-          <div className="flex flex-1 items-center lg:hidden">
+          <div className="flex flex-1 items-center xl:hidden">
             <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} />
           </div>
 
           {/* Desktop nav */}
-          <nav className="hidden flex-1 items-center gap-8 lg:flex">
+          <nav className="hidden flex-1 items-center gap-5 xl:flex 2xl:gap-7">
             {MAIN_NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "link-underline text-xs uppercase tracking-[0.2em] text-ivory-dim transition-colors hover:text-ivory",
+                  "link-underline whitespace-nowrap text-xs uppercase tracking-[0.14em] text-ivory-dim transition-colors hover:text-ivory 2xl:tracking-[0.18em]",
                   pathname.startsWith(item.href) && "text-ivory",
                 )}
               >
@@ -87,7 +88,7 @@ export function Header({
             href="/"
             className="flex flex-col items-center text-center leading-none"
           >
-            <span className="font-display text-2xl tracking-[0.15em] text-ivory lg:text-[1.7rem]">
+            <span className="font-display text-2xl tracking-[0.15em] text-ivory xl:text-[1.55rem]">
               {SITE.name.toUpperCase()}
             </span>
             <span className="mt-0.5 text-[0.5rem] uppercase tracking-[0.45em] text-gold">
@@ -104,6 +105,7 @@ export function Header({
             >
               <Search size={19} />
             </button>
+            <ThemeToggle />
             <Link
               href="/account/wishlist"
               aria-label="Wishlist"
@@ -172,6 +174,12 @@ function MobileNav({
           ))}
         </nav>
         <div className="mt-auto border-t border-line px-6 py-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase tracking-widest text-ivory-dim">
+              Theme
+            </span>
+            <ThemeToggle />
+          </div>
           <SheetClose asChild>
             <Link
               href={isAuthed ? "/account" : "/login"}

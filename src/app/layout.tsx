@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Toaster } from "sonner";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemedToaster } from "@/components/themed-toaster";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -53,22 +54,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="grain min-h-full bg-onyx text-ivory flex flex-col">
-        <NuqsAdapter>{children}</NuqsAdapter>
-        <Toaster
-          position="bottom-right"
-          theme="dark"
-          toastOptions={{
-            style: {
-              background: "#18181b",
-              border: "1px solid rgba(245,241,233,0.12)",
-              color: "#f5f1e9",
-              borderRadius: "2px",
-            },
-          }}
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <NuqsAdapter>{children}</NuqsAdapter>
+          <ThemedToaster />
+        </ThemeProvider>
       </body>
     </html>
   );

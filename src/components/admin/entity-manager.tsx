@@ -100,13 +100,15 @@ export function EntityManager<T extends { id: string }>({
                       <Pencil size={15} />
                     </button>
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        if (!confirm(`Delete this ${singular.toLowerCase()}? This cannot be undone.`))
+                          return;
                         start(async () => {
                           const res = await deleteAction(item.id);
                           if (res.ok) toast.success(`${singular} deleted`);
                           else toast.error(res.error ?? "Could not delete.");
-                        })
-                      }
+                        });
+                      }}
                       disabled={pending}
                       className="text-muted hover:text-rose"
                       aria-label="Delete"

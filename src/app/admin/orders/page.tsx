@@ -11,7 +11,12 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status: rawStatus } = await searchParams;
+  // Guard against invalid enum values which would otherwise throw a 500.
+  const status =
+    rawStatus && (ORDER_STATUS as readonly string[]).includes(rawStatus)
+      ? rawStatus
+      : undefined;
   const supabase = await createClient();
   let q = supabase.from("orders").select("*").order("created_at", { ascending: false });
   if (status) q = q.eq("status", status);

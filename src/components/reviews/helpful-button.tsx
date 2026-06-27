@@ -8,11 +8,13 @@ import { cn } from "@/lib/utils";
 export function HelpfulButton({
   reviewId,
   count,
+  initialVoted = false,
 }: {
   reviewId: string;
   count: number;
+  initialVoted?: boolean;
 }) {
-  const [voted, setVoted] = useState(false);
+  const [voted, setVoted] = useState(initialVoted);
   const [n, setN] = useState(count);
   const [pending, start] = useTransition();
 
@@ -22,8 +24,8 @@ export function HelpfulButton({
         start(async () => {
           const res = await voteHelpful(reviewId);
           if (res.ok) {
-            setVoted((v) => !v);
-            setN((c) => (voted ? c - 1 : c + 1));
+            setVoted(res.voted);
+            setN((c) => c + (res.voted ? 1 : -1));
           }
         })
       }

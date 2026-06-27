@@ -12,10 +12,11 @@ export async function GET(request: Request) {
     supabase
       .from("products")
       .select(
-        "id, slug, name, gender, brand:brands(name), images:product_images(url), variants:product_variants(price_bdt, sale_price_bdt)",
+        "id, slug, name, gender, brand:brands(name), images:product_images(url, position), variants:product_variants(price_bdt, sale_price_bdt)",
       )
       .eq("is_active", true)
       .ilike("search_text", `%${q.toLowerCase()}%`)
+      .order("position", { referencedTable: "product_images", ascending: true })
       .limit(6),
     supabase.from("brands").select("name, slug").ilike("name", `%${q}%`).limit(4),
   ]);

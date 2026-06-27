@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { variantPrice } from "@/lib/pricing";
+import { getSettings } from "@/lib/settings";
 import type { Product } from "@/types";
 
 const PAID_STATUSES = ["paid", "processing", "dispatched", "in_transit", "delivered"];
@@ -169,12 +170,13 @@ export async function getAnalytics(rangeDays = 30): Promise<Analytics> {
   const newCustomers = profiles.filter((p) => new Date(p.created_at) >= start).length;
 
   // Inventory.
+  const { lowStockThreshold } = await getSettings();
   const lowStock: { name: string; size: number; stock: number }[] = [];
   let inventoryValue = 0;
   for (const p of products) {
     for (const v of p.variants ?? []) {
       inventoryValue += variantPrice(v) * v.stock;
-      if (v.stock <= 5 && !v.is_sample)
+      if (v.stock <= lowStockThreshold && !v.is_sample)
         lowStock.push({ name: p.name, size: v.size_ml, stock: v.stock });
     }
   }

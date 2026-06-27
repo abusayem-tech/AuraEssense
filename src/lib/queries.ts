@@ -16,6 +16,11 @@ const PRODUCT_SELECT = `
   variants:product_variants(*)
 `;
 
+const IMAGE_ORDER = {
+  referencedTable: "product_images",
+  ascending: true,
+} as const;
+
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const supabase = await createClient();
   const { data } = await supabase
@@ -23,6 +28,7 @@ export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
     .select(PRODUCT_SELECT)
     .eq("is_active", true)
     .eq("is_featured", true)
+    .order("position", IMAGE_ORDER)
     .order("created_at", { ascending: false })
     .limit(limit);
   return (data as unknown as Product[]) ?? [];
@@ -34,6 +40,7 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("is_active", true)
+    .order("position", IMAGE_ORDER)
     .order("created_at", { ascending: false })
     .limit(limit);
   return (data as unknown as Product[]) ?? [];
@@ -46,6 +53,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .select(PRODUCT_SELECT)
     .eq("slug", slug)
     .eq("is_active", true)
+    .order("position", IMAGE_ORDER)
     .maybeSingle();
   return (data as unknown as Product) ?? null;
 }
@@ -54,13 +62,16 @@ export async function getRelatedProducts(
   product: Product,
   limit = 4,
 ): Promise<Product[]> {
+  // No family => nothing to relate by (and avoids an invalid uuid filter).
+  if (!product.family_id) return [];
   const supabase = await createClient();
   const { data } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("is_active", true)
-    .eq("family_id", product.family_id ?? "")
+    .eq("family_id", product.family_id)
     .neq("id", product.id)
+    .order("position", IMAGE_ORDER)
     .limit(limit);
   return (data as unknown as Product[]) ?? [];
 }
@@ -76,7 +87,8 @@ export async function getPairsWith(productId: string): Promise<Product[]> {
   const { data } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
-    .in("id", ids);
+    .in("id", ids)
+    .order("position", IMAGE_ORDER);
   return (data as unknown as Product[]) ?? [];
 }
 
@@ -136,7 +148,8 @@ export async function getCollectionBySlug(
       .from("products")
       .select(PRODUCT_SELECT)
       .in("id", ids)
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("position", IMAGE_ORDER);
     products = (data as unknown as Product[]) ?? [];
   }
   return { collection: collection as unknown as Collection, products };
@@ -151,9 +164,35 @@ export async function getProductReviews(productId: string): Promise<Review[]> {
     .eq("status", "approved")
     .order("helpful_count", { ascending: false })
     .order("created_at", { ascending: false });
-  return ((data ?? []) as unknown as (Review & { profile?: { full_name: string } })[]).map(
-    (r) => ({ ...r, author_name: r.profile?.full_name ?? "Verified Buyer" }),
-  );
+
+  const rows = (data ?? []) as unknown as (Review & {
+    profile?: { full_name: string } | null;
+  })[];
+
+  // Seed which of these reviews the current viewer has already marked helpful.
+  let votedSet = new Set<string>();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user && rows.length) {
+    const { data: votes } = await supabase
+      .from("review_votes")
+      .select("review_id")
+      .eq("user_id", user.id)
+      .in(
+        "review_id",
+        rows.map((r) => r.id),
+      );
+    votedSet = new Set(
+      (votes ?? []).map((v) => (v as { review_id: string }).review_id),
+    );
+  }
+
+  return rows.map((r) => ({
+    ...r,
+    author_name: r.profile?.full_name ?? "Verified Buyer",
+    viewer_voted: votedSet.has(r.id),
+  }));
 }
 
 export async function getJournalPosts(limit?: number): Promise<JournalPost[]> {

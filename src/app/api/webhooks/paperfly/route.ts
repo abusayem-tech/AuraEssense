@@ -15,6 +15,12 @@ const STATUS_MAP: Record<string, "in_transit" | "delivered" | "failed"> = {
  * order status and records a tracking event.
  */
 export async function POST(request: Request) {
+  // Authenticate the caller with a shared secret before mutating any order.
+  const secret = process.env.WEBHOOK_SECRET;
+  if (secret && request.headers.get("x-webhook-secret") !== secret) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
   let payload: Record<string, string> = {};
   try {
     const ct = request.headers.get("content-type") ?? "";

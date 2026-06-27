@@ -63,12 +63,19 @@ export async function submitReview(
   };
 }
 
-export async function voteHelpful(reviewId: string): Promise<{ ok: boolean }> {
+/**
+ * Toggle the current user's "helpful" vote. The DB trigger keeps
+ * reviews.helpful_count in sync; we return the resulting vote state so the UI
+ * can reconcile without drifting from the server.
+ */
+export async function voteHelpful(
+  reviewId: string,
+): Promise<{ ok: boolean; voted: boolean }> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false };
+  if (!user) return { ok: false, voted: false };
 
   const { data: existing } = await supabase
     .from("review_votes")
@@ -83,10 +90,10 @@ export async function voteHelpful(reviewId: string): Promise<{ ok: boolean }> {
       .delete()
       .eq("review_id", reviewId)
       .eq("user_id", user.id);
-  } else {
-    await supabase
-      .from("review_votes")
-      .insert({ review_id: reviewId, user_id: user.id, helpful: true });
+    return { ok: true, voted: false };
   }
-  return { ok: true };
+  await supabase
+    .from("review_votes")
+    .insert({ review_id: reviewId, user_id: user.id, helpful: true });
+  return { ok: true, voted: true };
 }

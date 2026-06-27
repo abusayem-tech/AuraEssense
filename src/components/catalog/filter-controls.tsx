@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useQueryState, useQueryStates, parseAsArrayOf, parseAsString, parseAsBoolean, parseAsInteger } from "nuqs";
 import { SlidersHorizontal, X, Check } from "lucide-react";
 import * as Accordion from "@radix-ui/react-accordion";
@@ -52,7 +51,7 @@ function CheckRow({
   );
 }
 
-function Group({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Accordion.Item value={title} className="border-b border-line">
       <Accordion.Header>

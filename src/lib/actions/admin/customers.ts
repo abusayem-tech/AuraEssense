@@ -32,8 +32,12 @@ export async function adjustCustomerLoyalty(
   return { ok: true };
 }
 
-export async function toggleBlockCustomer(userId: string): Promise<{ ok: boolean }> {
+export async function toggleBlockCustomer(
+  userId: string,
+): Promise<{ ok: boolean; error?: string }> {
   const ctx = await requireAdmin();
+  if (userId === ctx.userId)
+    return { ok: false, error: "You cannot block your own account." };
   const supabase = createAdminClient();
   const { data: p } = await supabase
     .from("profiles")
@@ -44,18 +48,33 @@ export async function toggleBlockCustomer(userId: string): Promise<{ ok: boolean
   await supabase.from("profiles").update({ is_blocked: !blocked }).eq("id", userId);
   await logAudit(ctx, blocked ? "unblock" : "block", "profile", userId);
   revalidatePath(`/admin/customers/${userId}`);
+  revalidatePath("/admin/customers");
   return { ok: true };
 }
 
 export async function setCustomerRole(
   userId: string,
   role: "customer" | "admin",
-): Promise<{ ok: boolean }> {
+): Promise<{ ok: boolean; error?: string }> {
   const ctx = await requireAdmin();
   const supabase = createAdminClient();
+
+  // Prevent locking the whole org out of the admin area.
+  if (role === "customer") {
+    if (userId === ctx.userId)
+      return { ok: false, error: "You cannot remove your own admin access." };
+    const { count } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if ((count ?? 0) <= 1)
+      return { ok: false, error: "At least one admin must remain." };
+  }
+
   await supabase.from("profiles").update({ role }).eq("id", userId);
   await logAudit(ctx, "role_change", "profile", userId, { role });
   revalidatePath(`/admin/customers/${userId}`);
+  revalidatePath("/admin/customers");
   return { ok: true };
 }
 

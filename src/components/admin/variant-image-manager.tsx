@@ -77,7 +77,10 @@ export function VariantManager({
                 <Td className={v.stock <= 5 ? "text-rose" : ""}>{v.stock}</Td>
                 <Td className="text-right">
                   <button
-                    onClick={() => start(async () => { await deleteVariant(v.id, productId); toast.success("Variant removed"); })}
+                    onClick={() => {
+                      if (!confirm("Remove this variant?")) return;
+                      start(async () => { await deleteVariant(v.id, productId); toast.success("Variant removed"); });
+                    }}
                     disabled={pending}
                     className="text-muted hover:text-rose"
                   >
@@ -121,7 +124,10 @@ export function ImageManager({
           <div key={img.id} className="group relative aspect-[3/4] overflow-hidden bg-onyx-raised">
             <ProductImage src={img.url} alt={img.alt || "Image"} sizes="120px" />
             <button
-              onClick={() => start(async () => { await deleteImage(img.id, productId); toast.success("Image removed"); })}
+              onClick={() => {
+                if (!confirm("Remove this image?")) return;
+                start(async () => { await deleteImage(img.id, productId); toast.success("Image removed"); });
+              }}
               className="absolute right-2 top-2 bg-onyx/80 p-1.5 text-ivory-dim opacity-0 transition-opacity hover:text-rose group-hover:opacity-100"
             >
               <Trash2 size={14} />

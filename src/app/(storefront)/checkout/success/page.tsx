@@ -3,7 +3,7 @@ import { CheckCircle2, Package } from "lucide-react";
 import { Container } from "@/components/ui/misc";
 import { Button } from "@/components/ui/button";
 import { CartClearer } from "@/components/checkout/cart-clearer";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { formatBDT } from "@/lib/format";
 import type { Order, OrderItem } from "@/types";
 
@@ -18,7 +18,9 @@ export default async function SuccessPage({
   let order: (Order & { items?: OrderItem[] }) | null = null;
 
   if (orderId) {
-    const supabase = await createClient();
+    // The order id (an unguessable UUID) is the access token here, so we read
+    // via the service-role client to also show guest orders on confirmation.
+    const supabase = createAdminClient();
     const { data } = await supabase
       .from("orders")
       .select("*, items:order_items(*)")

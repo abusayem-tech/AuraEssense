@@ -27,12 +27,7 @@ export default async function AdminOrderDetail({
   const events = (order.events ?? []).sort(
     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   );
-  let note = "";
-  try {
-    note = order.admin_notes && !order.admin_notes.startsWith("{") ? order.admin_notes : "";
-  } catch {
-    note = "";
-  }
+  const note = order.admin_notes ?? "";
 
   return (
     <div>

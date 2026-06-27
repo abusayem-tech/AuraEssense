@@ -106,7 +106,11 @@ export function ReviewsSection({
                       </Badge>
                     )}
                   </div>
-                  <HelpfulButton reviewId={r.id} count={r.helpful_count} />
+                  <HelpfulButton
+                    reviewId={r.id}
+                    count={r.helpful_count}
+                    initialVoted={r.viewer_voted ?? false}
+                  />
                 </div>
               </li>
             ))}

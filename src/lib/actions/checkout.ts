@@ -81,6 +81,25 @@ export async function simulatePayment(
   transactionId: string,
   outcome: "success" | "fail" | "cancel",
 ): Promise<{ redirect: string }> {
+  // This simulated outcome is only valid for the mock gateway. With a real
+  // gateway, settlement must come exclusively from the verified IPN webhook.
+  if ((process.env.PAYMENT_PROVIDER ?? "mock") !== "mock") {
+    return { redirect: `/checkout/fail?order=${orderId}` };
+  }
+
+  // Verify the order exists and the transaction id matches the one issued when
+  // the payment session was created — prevents marking arbitrary orders paid.
+  const admin = createAdminClient();
+  const { data: order } = await admin
+    .from("orders")
+    .select("id, ssl_transaction_id")
+    .eq("id", orderId)
+    .maybeSingle();
+  const o = order as { id: string; ssl_transaction_id: string | null } | null;
+  if (!o || (o.ssl_transaction_id && o.ssl_transaction_id !== transactionId)) {
+    return { redirect: `/checkout/fail?order=${orderId}` };
+  }
+
   if (outcome === "success") {
     await markOrderPaid(orderId, transactionId);
     return { redirect: `/checkout/success?order=${orderId}` };
@@ -98,7 +117,9 @@ export async function previewDiscount(
   code: string,
   subtotal: number,
 ): Promise<{ ok: boolean; type?: string; amount?: number; message: string }> {
-  const supabase = await createClient();
+  // Promo / gift card tables are admin-only under RLS, so use the service-role
+  // client for this read-only validation (mirrors createOrderFromCart).
+  const supabase = createAdminClient();
   const upper = code.toUpperCase();
 
   const { data: promo } = await supabase
@@ -111,6 +132,8 @@ export async function previewDiscount(
     type: string;
     value: number;
     min_order: number;
+    usage_limit: number | null;
+    used_count: number;
     expires_at: string | null;
   } | null;
 
@@ -119,6 +142,8 @@ export async function previewDiscount(
       return { ok: false, message: `Minimum order ৳${p.min_order} required.` };
     if (p.expires_at && new Date(p.expires_at) < new Date())
       return { ok: false, message: "This code has expired." };
+    if (p.usage_limit != null && p.used_count >= p.usage_limit)
+      return { ok: false, message: "This code is no longer available." };
     const amount =
       p.type === "percent"
         ? Math.round((subtotal * p.value) / 100)

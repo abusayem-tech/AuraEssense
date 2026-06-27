@@ -54,7 +54,8 @@ export function Hero() {
         >
           Discover Your
           <br />
-          <span className="italic text-gold-soft">Signature Scent</span>
+          <span className="text-gold-soft">Signature Scent</span>
+     
         </motion.h1>
         <motion.p
           initial={reduce ? false : { opacity: 0 }}

@@ -7,6 +7,13 @@ import { markOrderPaid, setOrderStatus } from "@/lib/orders";
  * On a VALID transaction the order is marked paid and stock decremented (REQ-8).
  */
 export async function POST(request: Request) {
+  // Authenticate the caller with a shared secret. In live mode the gateway's
+  // verifyIpn must additionally perform real signature + amount validation.
+  const secret = process.env.WEBHOOK_SECRET;
+  if (secret && request.headers.get("x-webhook-secret") !== secret) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   let payload: Record<string, string> = {};
   const contentType = request.headers.get("content-type") ?? "";
 

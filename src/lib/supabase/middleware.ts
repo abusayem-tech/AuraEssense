@@ -34,15 +34,22 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isProtected =
-    pathname.startsWith("/account") || pathname.startsWith("/checkout");
+  // Guest checkout is supported, so only /account requires a session here.
+  const isProtected = pathname.startsWith("/account");
   const isAdmin = pathname.startsWith("/admin");
+
+  // Preserve any auth cookies refreshed above when issuing a redirect.
+  const redirectTo = (url: URL) => {
+    const redirect = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
+  };
 
   if (!user && (isProtected || isAdmin)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(url);
+    return redirectTo(url);
   }
 
   // Role check for admin area.
@@ -51,12 +58,12 @@ export async function updateSession(request: NextRequest) {
       .from("profiles")
       .select("role")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (profile?.role !== "admin") {
+    if ((profile as { role?: string } | null)?.role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = "/";
-      return NextResponse.redirect(url);
+      return redirectTo(url);
     }
   }
 

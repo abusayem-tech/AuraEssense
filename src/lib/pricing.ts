@@ -23,11 +23,14 @@ export function defaultVariant(product: Product): ProductVariant | undefined {
   return full[0] ?? variants[0];
 }
 
-/** Lowest effective price across a products variants (the "from" price). */
+/** Lowest effective price across a product's full-bottle variants ("from" price). */
 export function fromPrice(product: Product): number {
   const variants = product.variants ?? [];
   if (variants.length === 0) return 0;
-  return Math.min(...variants.map(variantPrice));
+  // Exclude samples so the "from" price matches the bottle shown on cards.
+  const bottles = variants.filter((v) => !v.is_sample);
+  const pool = bottles.length ? bottles : variants;
+  return Math.min(...pool.map(variantPrice));
 }
 
 export function totalStock(product: Product): number {

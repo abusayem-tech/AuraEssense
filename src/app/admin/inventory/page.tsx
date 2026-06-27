@@ -1,6 +1,7 @@
 import { AdminHeader, Table, Th, Td, EmptyRow, StatCard } from "@/components/admin/admin-ui";
 import { StockAdjuster } from "@/components/admin/stock-adjuster";
 import { createClient } from "@/lib/supabase/server";
+import { getSettings } from "@/lib/settings";
 import { formatBDT } from "@/lib/format";
 
 interface Row {
@@ -16,14 +17,18 @@ interface Row {
 
 export default async function InventoryPage() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("product_variants")
-    .select("*, product:products(name, brand:brands(name))")
-    .order("stock", { ascending: true });
+  const [{ data }, settings] = await Promise.all([
+    supabase
+      .from("product_variants")
+      .select("*, product:products(name, brand:brands(name))")
+      .order("stock", { ascending: true }),
+    getSettings(),
+  ]);
   const rows = (data as unknown as Row[]) ?? [];
+  const lowThreshold = settings.lowStockThreshold;
 
   const totalUnits = rows.reduce((s, r) => s + r.stock, 0);
-  const lowCount = rows.filter((r) => r.stock <= 5 && !r.is_sample).length;
+  const lowCount = rows.filter((r) => r.stock <= lowThreshold && !r.is_sample).length;
   const value = rows.reduce((s, r) => s + (r.sale_price_bdt ?? r.price_bdt) * r.stock, 0);
 
   return (

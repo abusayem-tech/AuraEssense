@@ -36,29 +36,38 @@ export function CommandSearch({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 50);
-    else {
+    if (open) {
+      const t = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => {
       setQ("");
       setResults({ products: [], brands: [] });
-    }
+    }, 0);
+    return () => clearTimeout(t);
   }, [open]);
 
   useEffect(() => {
-    if (q.trim().length < 2) {
-      setResults({ products: [], brands: [] });
-      return;
-    }
-    setLoading(true);
-    const t = setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-        setResults(await res.json());
-      } catch {
-        /* ignore */
-      } finally {
-        setLoading(false);
-      }
-    }, 250);
+    const query = q.trim();
+    const t = setTimeout(
+      async () => {
+        if (query.length < 2) {
+          setResults({ products: [], brands: [] });
+          setLoading(false);
+          return;
+        }
+        setLoading(true);
+        try {
+          const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+          setResults(await res.json());
+        } catch {
+          /* ignore */
+        } finally {
+          setLoading(false);
+        }
+      },
+      query.length < 2 ? 0 : 250,
+    );
     return () => clearTimeout(t);
   }, [q]);
 

@@ -5,11 +5,17 @@ const bdt = new Intl.NumberFormat("en-BD", {
   maximumFractionDigits: 0,
 });
 
-/** Format a number as Bangladeshi Taka, e.g. 5500 -> "৳ 5,500" */
+/** Format a number as Bangladeshi Taka, e.g. 5500 -> "৳ 5,500" (handles negatives). */
 export function formatBDT(amount: number | null | undefined): string {
   const value = typeof amount === "number" ? amount : 0;
-  // Intl narrowSymbol yields "৳5,500"; insert a thin space for elegance.
-  return bdt.format(value).replace(/^৳/, "৳ ").replace(/^BDT\s?/, "৳ ");
+  const sign = value < 0 ? "-" : "";
+  // Format the magnitude so the sign doesn't break the symbol normalization,
+  // then re-prepend it. Intl narrowSymbol yields "৳5,500" -> "৳ 5,500".
+  const formatted = bdt
+    .format(Math.abs(value))
+    .replace(/^৳/, "৳ ")
+    .replace(/^BDT\s?/, "৳ ");
+  return `${sign}${formatted}`;
 }
 
 export function formatNumber(n: number | null | undefined): string {
