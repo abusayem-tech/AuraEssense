@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemedToaster } from "@/components/themed-toaster";
+import { RouteProgress } from "@/components/layout/route-progress";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -64,6 +66,9 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          <Suspense fallback={null}>
+            <RouteProgress />
+          </Suspense>
           <NuqsAdapter>{children}</NuqsAdapter>
           <ThemedToaster />
         </ThemeProvider>

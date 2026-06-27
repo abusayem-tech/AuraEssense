@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, Loader2, ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ProductImage } from "@/components/product/product-image";
+import { startRouteProgress } from "@/components/layout/route-progress";
 import { formatBDT } from "@/lib/format";
 
 interface SearchResult {
@@ -73,6 +74,7 @@ export function CommandSearch({
 
   function go(href: string) {
     onOpenChange(false);
+    startRouteProgress();
     router.push(href);
   }
 
