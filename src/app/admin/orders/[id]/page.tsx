@@ -47,7 +47,8 @@ export default async function AdminOrderDetail({
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <p className="mb-4 text-[0.65rem] uppercase tracking-widest text-muted">Items</p>
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[20rem] text-sm">
               <tbody>
                 {order.items?.map((it) => (
                   <tr key={it.id} className="border-b border-line">
@@ -61,6 +62,7 @@ export default async function AdminOrderDetail({
                 ))}
               </tbody>
             </table>
+            </div>
             <dl className="mt-4 space-y-1.5 text-sm">
               <Row label="Subtotal" value={formatBDT(order.subtotal)} />
               <Row label="Delivery" value={formatBDT(order.delivery_fee)} />

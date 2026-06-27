@@ -49,8 +49,8 @@ export default async function FragrancesPage({
           <DesktopFilters brands={brands} families={families} notes={notes} />
 
           <div className="min-w-0 flex-1">
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 <MobileFilters brands={brands} families={families} notes={notes} />
                 <p className="text-xs uppercase tracking-widest text-muted">
                   {result.total} {result.total === 1 ? "scent" : "scents"}

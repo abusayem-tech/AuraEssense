@@ -62,39 +62,42 @@ export function Header({
         )}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 xl:h-20">
-          {/* Mobile menu */}
-          <div className="flex flex-1 items-center xl:hidden">
-            <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} />
+          {/* Left: mobile menu + logo + desktop nav */}
+          <div className="flex items-center gap-4 sm:gap-6 xl:gap-10">
+            {/* Mobile menu */}
+            <div className="flex items-center xl:hidden">
+              <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} />
+            </div>
+
+            {/* Logo */}
+            <Link
+              href="/"
+              className="flex flex-col items-center leading-none"
+            >
+              <span className="font-display text-2xl tracking-[0.15em] text-ivory xl:text-[1.7rem]">
+                {SITE.name.toUpperCase()}
+              </span>
+              <span className="mt-0.5 text-[0.5rem] uppercase tracking-[0.45em] text-gold">
+                Maison de Parfum
+              </span>
+            </Link>
+
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-6 xl:flex 2xl:gap-8">
+              {MAIN_NAV.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "link-underline whitespace-nowrap text-xs uppercase tracking-[0.2em] text-ivory-dim transition-colors hover:text-ivory",
+                    pathname.startsWith(item.href) && "text-ivory",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           </div>
-
-          {/* Desktop nav */}
-          <nav className="hidden flex-1 items-center gap-5 xl:flex 2xl:gap-7">
-            {MAIN_NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "link-underline whitespace-nowrap text-xs uppercase tracking-[0.14em] text-ivory-dim transition-colors hover:text-ivory 2xl:tracking-[0.18em]",
-                  pathname.startsWith(item.href) && "text-ivory",
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex flex-col items-center text-center leading-none"
-          >
-            <span className="font-display text-2xl tracking-[0.15em] text-ivory xl:text-[1.55rem]">
-              {SITE.name.toUpperCase()}
-            </span>
-            <span className="mt-0.5 text-[0.5rem] uppercase tracking-[0.45em] text-gold">
-              Maison de Parfum
-            </span>
-          </Link>
 
           {/* Actions */}
           <div className="flex flex-1 items-center justify-end gap-3 sm:gap-5">
