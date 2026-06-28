@@ -17,7 +17,13 @@ export function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={
+        !mounted
+          ? "Toggle theme"
+          : isDark
+            ? "Switch to light mode"
+            : "Switch to dark mode"
+      }
       className={cn(
         "text-ivory-dim transition-colors hover:text-gold",
         className,
