@@ -151,6 +151,9 @@ body {
 .link-underline:hover::after {
   width: 100%;
 }
+.link-underline.is-active::after {
+  width: 100%;
+}
 
 /* Scrollbar ---------------------------------------------------------------- */
 ::-webkit-scrollbar {

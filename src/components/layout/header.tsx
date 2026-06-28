@@ -84,18 +84,22 @@ export function Header({
 
             {/* Desktop nav */}
             <nav className="hidden items-center gap-6 xl:flex 2xl:gap-8">
-              {MAIN_NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "link-underline whitespace-nowrap text-xs uppercase tracking-[0.2em] text-ivory-dim transition-colors hover:text-ivory",
-                    pathname.startsWith(item.href) && "text-ivory",
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {MAIN_NAV.map((item) => {
+                const active = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "link-underline whitespace-nowrap text-xs uppercase tracking-[0.2em] text-ivory-dim transition-colors hover:text-ivory",
+                      active && "is-active text-ivory",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
