@@ -29,13 +29,13 @@ export default async function MockPayPage({
             Simulated Payment Gateway (Mock)
           </p>
         </div>
-        <div className="p-8 text-center">
+        <div className="p-6 text-center sm:p-8">
           <p className="text-sm text-muted">Amount payable</p>
-          <p className="mt-2 font-display text-5xl text-ivory tnum">
+          <p className="mt-2 font-display text-4xl text-ivory tnum sm:text-5xl">
             {formatBDT(Number(amount ?? 0))}
           </p>
           <p className="mt-4 text-xs text-muted">
-            Transaction: <span className="text-ivory-dim">{tran}</span>
+            Transaction: <span className="break-all text-ivory-dim">{tran}</span>
           </p>
 
           <div className="mt-8 grid gap-3">

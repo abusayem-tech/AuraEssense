@@ -37,7 +37,7 @@ export default async function HomePage() {
       <BrandMarquee brands={brands} />
 
       {/* Featured */}
-      <Container className="py-24">
+      <Container className="py-16 md:py-24">
         <Reveal>
           <div className="flex items-end justify-between">
             <SectionHeading
@@ -59,7 +59,7 @@ export default async function HomePage() {
 
       {/* Collections */}
       {collections.length > 0 && (
-        <section className="bg-onyx-soft py-24">
+        <section className="bg-onyx-soft py-16 md:py-24">
           <Container>
             <Reveal>
               <SectionHeading
@@ -82,13 +82,13 @@ export default async function HomePage() {
                       className="transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width:768px) 100vw, 33vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-onyx via-onyx/20 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-8">
-                      <p className="eyebrow !mb-2">{c.subtitle}</p>
-                      <h3 className="font-display text-3xl text-ivory">
+                    <div className="photo-scrim-soft absolute inset-0" />
+                    <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                      <p className="photo-eyebrow !mb-2">{c.subtitle}</p>
+                      <h3 className="photo-text font-display text-3xl">
                         {c.name}
                       </h3>
-                      <span className="mt-3 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-gold opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      <span className="mt-3 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-photo-gold opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                         Discover <ArrowRight size={14} />
                       </span>
                     </div>
@@ -101,26 +101,30 @@ export default async function HomePage() {
       )}
 
       {/* Quiz CTA */}
-      <section className="relative overflow-hidden py-28">
+      <section className="relative overflow-hidden py-16 md:py-28">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=1600&q=80')",
           }}
         />
-        <div className="absolute inset-0 bg-onyx/60" />
+        <div className="absolute inset-0 bg-[var(--photo-ink)]/70" />
         <Container className="relative text-center">
           <Reveal>
-            <Sparkles className="mx-auto mb-6 text-gold" size={32} />
-            <h2 className="mx-auto max-w-2xl font-display text-4xl text-ivory sm:text-5xl">
+            <Sparkles className="mx-auto mb-6 text-photo-gold" size={32} />
+            <h2 className="photo-text mx-auto max-w-2xl font-display text-4xl sm:text-5xl">
               Not sure where to begin?
             </h2>
-            <p className="mx-auto mt-5 max-w-lg text-ivory-dim">
+            <p className="photo-text-dim mx-auto mt-5 max-w-lg">
               Answer four simple questions and let our scent algorithm reveal the
               three fragrances destined to become your signature.
             </p>
-            <Button asChild size="lg" className="mt-9">
+            <Button
+              asChild
+              size="lg"
+              className="mt-9 bg-photo-gold text-photo-on-gold hover:bg-photo-gold-soft"
+            >
               <Link href="/quiz">Begin the Scent Quiz</Link>
             </Button>
           </Reveal>
@@ -128,7 +132,7 @@ export default async function HomePage() {
       </section>
 
       {/* Family explorer */}
-      <Container className="py-24">
+      <Container className="py-16 md:py-24">
         <Reveal>
           <SectionHeading
             eyebrow="By Olfactory Family"
@@ -141,7 +145,7 @@ export default async function HomePage() {
             <Reveal key={f.id} delay={i * 0.05}>
               <Link
                 href={`/fragrances?family=${f.slug}`}
-                className="group flex flex-col items-center justify-center border border-line p-8 text-center transition-colors hover:border-gold"
+                className="group flex flex-col items-center justify-center border border-line p-4 sm:p-8 text-center transition-colors hover:border-gold"
               >
                 <span
                   className="mb-4 h-10 w-10 rounded-full border"
@@ -150,7 +154,7 @@ export default async function HomePage() {
                     borderColor: f.accent_color ?? undefined,
                   }}
                 />
-                <h3 className="font-display text-2xl text-ivory transition-colors group-hover:text-gold">
+                <h3 className="font-display text-xl sm:text-2xl text-ivory transition-colors group-hover:text-gold">
                   {f.name}
                 </h3>
                 <p className="mt-2 line-clamp-2 text-xs text-muted">
@@ -166,7 +170,7 @@ export default async function HomePage() {
 
       {/* Journal */}
       {journal.length > 0 && (
-        <Container className="py-24">
+        <Container className="py-16 md:py-24">
           <Reveal>
             <div className="flex items-end justify-between">
               <SectionHeading eyebrow="The Journal" title="Notes & Stories" />

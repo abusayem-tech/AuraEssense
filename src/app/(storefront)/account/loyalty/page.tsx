@@ -25,12 +25,12 @@ export default async function LoyaltyPage() {
     <div>
       <h2 className="mb-6 font-display text-2xl text-ivory">AuraEssence Rewards</h2>
 
-      <div className="border border-gold/30 bg-gradient-to-br from-gold/10 to-transparent p-8">
+      <div className="border border-gold/30 bg-gradient-to-br from-gold/10 to-transparent p-6 md:p-8">
         <Sparkles className="text-gold" size={28} />
         <p className="mt-4 text-xs uppercase tracking-widest text-muted">
           Available Balance
         </p>
-        <p className="mt-1 font-display text-5xl text-ivory tnum">
+        <p className="mt-1 font-display text-4xl text-ivory tnum sm:text-5xl">
           {profile?.loyalty_points ?? 0}
           <span className="ml-2 text-lg text-muted">points</span>
         </p>
@@ -48,13 +48,13 @@ export default async function LoyaltyPage() {
       ) : (
         <ul className="divide-y divide-line border border-line">
           {txns.map((t) => (
-            <li key={t.id} className="flex items-center justify-between p-4">
-              <div>
-                <p className="text-sm text-ivory">{t.reason}</p>
+            <li key={t.id} className="flex items-center justify-between gap-4 p-4">
+              <div className="min-w-0">
+                <p className="break-words text-sm text-ivory">{t.reason}</p>
                 <p className="text-xs text-muted">{formatDate(t.created_at)}</p>
               </div>
               <span
-                className={`text-sm tnum ${t.points >= 0 ? "text-emerald" : "text-rose"}`}
+                className={`shrink-0 text-sm tnum ${t.points >= 0 ? "text-emerald" : "text-rose"}`}
               >
                 {t.points >= 0 ? "+" : ""}
                 {t.points}

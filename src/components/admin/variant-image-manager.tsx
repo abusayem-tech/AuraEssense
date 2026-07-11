@@ -39,16 +39,16 @@ export function VariantManager({
           <DialogTrigger asChild>
             <Button size="sm" variant="outline"><Plus size={14} /> Add Variant</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[85vh] overflow-y-auto">
             <DialogTitle className="font-display text-2xl text-ivory">Add Variant</DialogTitle>
             <form action={onSave} className="mt-5 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div><Label htmlFor="size_ml">Size (ml)</Label><Input id="size_ml" name="size_ml" type="number" required /></div>
                 <div><Label htmlFor="sku">SKU</Label><Input id="sku" name="sku" required /></div>
                 <div><Label htmlFor="price_bdt">Price (BDT)</Label><Input id="price_bdt" name="price_bdt" type="number" required /></div>
                 <div><Label htmlFor="sale_price_bdt">Sale Price</Label><Input id="sale_price_bdt" name="sale_price_bdt" type="number" /></div>
                 <div><Label htmlFor="stock">Stock</Label><Input id="stock" name="stock" type="number" required /></div>
-                <label className="col-span-2 flex items-center gap-2 text-sm text-ivory-dim">
+                <label className="flex items-center gap-2 text-sm text-ivory-dim sm:col-span-2">
                   <input type="checkbox" name="is_sample" className="accent-[var(--gold)]" /> Sample size
                 </label>
               </div>
@@ -68,7 +68,7 @@ export function VariantManager({
           ) : (
             variants.map((v) => (
               <tr key={v.id}>
-                <Td className="text-ivory">{v.is_sample ? "Sample" : `${v.size_ml}ml`}</Td>
+                <Td className="text-ivory">{`${v.size_ml}ml`}</Td>
                 <Td>{v.sku}</Td>
                 <Td className="tnum">
                   {formatBDT(v.sale_price_bdt ?? v.price_bdt)}

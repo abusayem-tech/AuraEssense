@@ -77,6 +77,10 @@ export const useCart = create<CartState>()(
       count: () => get().lines.reduce((n, l) => n + l.qty, 0),
       subtotal: () => get().lines.reduce((n, l) => n + l.unitPrice * l.qty, 0),
     }),
-    { name: "aura-cart" },
+    {
+      name: "aura-cart",
+      // Don't persist drawer open state — otherwise the bag stays open across routes.
+      partialize: (state) => ({ lines: state.lines }),
+    },
   ),
 );

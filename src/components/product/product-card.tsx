@@ -55,11 +55,15 @@ export function ProductCard({
 
         {/* Badges */}
         <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-2">
-          {onSale && <Badge variant="gold">Sale</Badge>}
+          {onSale && <Badge variant="photo-gold">Sale</Badge>}
           {product.is_featured && !onSale && (
-            <Badge variant="outline">Featured</Badge>
+            <Badge variant="photo">Featured</Badge>
           )}
-          {soldOut && <Badge variant="rose">Sold Out</Badge>}
+          {soldOut && (
+            <Badge variant="photo" className="text-rose border-rose/40">
+              Sold Out
+            </Badge>
+          )}
         </div>
 
         <div className="absolute right-3 top-3">
@@ -68,7 +72,7 @@ export function ProductCard({
 
         {/* Quick add */}
         {!soldOut && variant && (
-          <div className="absolute inset-x-3 bottom-3 translate-y-3 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="absolute inset-x-3 bottom-3 translate-y-0 opacity-100 transition-all duration-500 lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100">
             <QuickAdd product={product} />
           </div>
         )}

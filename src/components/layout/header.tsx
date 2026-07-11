@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { CommandSearch } from "@/components/search/command-search";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AccountMenu } from "@/components/account/account-menu";
 
 export function Header({
   isAuthed,
@@ -26,9 +27,12 @@ export function Header({
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { count, open } = useCart();
   const itemCount = count();
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,6 +54,14 @@ export function Header({
 
   const isHome = pathname === "/";
   const solid = scrolled || !isHome;
+  const overHero = isHome && !scrolled;
+  const ink = overHero ? "text-[var(--photo-text)]" : "text-ivory";
+  const inkDim = overHero
+    ? "text-[var(--photo-text-dim)] hover:text-[var(--photo-text)]"
+    : "text-ivory-dim hover:text-ivory";
+  const icon = overHero
+    ? "text-[var(--photo-text-dim)] hover:text-photo-gold"
+    : "text-ivory-dim hover:text-gold";
 
   return (
     <>
@@ -66,7 +78,7 @@ export function Header({
           <div className="flex items-center gap-4 sm:gap-6 xl:gap-10">
             {/* Mobile menu */}
             <div className="flex items-center xl:hidden">
-              <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} />
+              <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} iconClass={icon} />
             </div>
 
             {/* Logo */}
@@ -74,7 +86,7 @@ export function Header({
               href="/"
               className="flex flex-col items-center leading-none"
             >
-              <span className="font-display text-2xl tracking-[0.15em] text-ivory xl:text-[1.7rem]">
+              <span className={cn("font-display text-2xl tracking-[0.15em] xl:text-[1.7rem]", ink)}>
                 {SITE.name.toUpperCase()}
               </span>
               <span className="mt-0.5 text-[0.5rem] uppercase tracking-[0.45em] text-gold">
@@ -92,8 +104,9 @@ export function Header({
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "link-underline whitespace-nowrap text-xs uppercase tracking-[0.2em] text-ivory-dim transition-colors hover:text-ivory",
-                      active && "is-active text-ivory",
+                      "link-underline whitespace-nowrap text-xs uppercase tracking-[0.2em] transition-colors",
+                      inkDim,
+                      active && (overHero ? "is-active text-[var(--photo-text)]" : "is-active text-ivory"),
                     )}
                   >
                     {item.label}
@@ -108,33 +121,37 @@ export function Header({
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
-              className="text-ivory-dim transition-colors hover:text-gold"
+              className={cn("-m-2 p-2 transition-colors", icon)}
             >
               <Search size={19} />
             </button>
-            <ThemeToggle />
+            <ThemeToggle className={icon} />
             <Link
               href="/account/wishlist"
               aria-label="Wishlist"
-              className="hidden text-ivory-dim transition-colors hover:text-gold sm:block"
+              className={cn("hidden transition-colors sm:block", icon)}
             >
               <Heart size={19} />
             </Link>
-            <Link
-              href={isAuthed ? "/account" : "/login"}
-              aria-label="Account"
-              className="text-ivory-dim transition-colors hover:text-gold"
-            >
-              <User size={19} />
-            </Link>
+            {isAuthed ? (
+              <AccountMenu isAdmin={isAdmin} iconClass={icon} />
+            ) : (
+              <Link
+                href="/login"
+                aria-label="Account"
+                className={cn("-m-2 p-2 transition-colors", icon)}
+              >
+                <User size={19} />
+              </Link>
+            )}
             <button
               onClick={open}
               aria-label="Open bag"
-              className="relative text-ivory-dim transition-colors hover:text-gold"
+              className={cn("relative transition-colors", icon)}
             >
               <ShoppingBag size={19} />
-              {itemCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[0.6rem] font-medium text-onyx tnum">
+              {mounted && itemCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[0.6rem] font-medium text-on-gold tnum">
                   {itemCount}
                 </span>
               )}
@@ -150,13 +167,15 @@ export function Header({
 function MobileNav({
   isAuthed,
   isAdmin,
+  iconClass,
 }: {
   isAuthed: boolean;
   isAdmin: boolean;
+  iconClass?: string;
 }) {
   return (
     <Sheet>
-      <SheetTrigger aria-label="Open menu" className="text-ivory">
+      <SheetTrigger aria-label="Open menu" className={cn("-m-2 p-2", iconClass ?? "text-ivory")}>
         <Menu size={22} />
       </SheetTrigger>
       <SheetContent side="left" showClose={false} className="sm:max-w-xs">
@@ -164,7 +183,7 @@ function MobileNav({
           <SheetTitle className="font-display text-xl text-ivory">
             Menu
           </SheetTitle>
-          <SheetClose className="text-muted hover:text-ivory">
+          <SheetClose className="-m-2 p-2 text-muted hover:text-ivory">
             <X size={20} />
           </SheetClose>
         </div>

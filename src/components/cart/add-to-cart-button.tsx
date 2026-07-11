@@ -30,7 +30,7 @@ export function AddToCartButton({
       onClick={() => {
         add(line, qty);
         toast.success("Added to your bag", {
-          description: `${line.name} · ${line.isSample ? "Sample" : line.sizeMl + "ml"}`,
+          description: `${line.name} · ${line.sizeMl}ml`,
         });
       }}
       {...buttonProps}

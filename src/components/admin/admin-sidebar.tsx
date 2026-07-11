@@ -111,7 +111,7 @@ export function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 rounded-sm px-3 py-2 text-sm transition-colors",
                     active
-                      ? "bg-gold/10 text-gold"
+                      ? "bg-gold/15 text-gold ring-1 ring-inset ring-gold/25"
                       : "text-ivory-dim hover:bg-onyx-raised hover:text-ivory",
                   )}
                 >

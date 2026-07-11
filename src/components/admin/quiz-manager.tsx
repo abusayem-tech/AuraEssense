@@ -54,7 +54,7 @@ export function QuizManager({ questions }: { questions: Question[] }) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-3xl text-ivory">Scent Quiz</h1>
         <Button size="sm" onClick={() => { setQEdit(null); setQDialog(true); }}>
           <Plus size={14} /> Add Question
@@ -64,28 +64,28 @@ export function QuizManager({ questions }: { questions: Question[] }) {
       <div className="space-y-5">
         {questions.map((q) => (
           <Card key={q.id}>
-            <div className="flex items-start justify-between">
-              <div>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-[0.6rem] uppercase tracking-widest text-muted">Question {q.position + 1}</p>
                 <h3 className="mt-1 font-display text-xl text-ivory">{q.prompt}</h3>
                 {q.subtitle && <p className="text-sm text-muted">{q.subtitle}</p>}
               </div>
-              <div className="flex gap-2">
+              <div className="flex shrink-0 gap-2">
                 <button onClick={() => { setQEdit(q); setQDialog(true); }} className="text-muted hover:text-gold"><Pencil size={15} /></button>
                 <button onClick={() => { if (!confirm("Delete this question and its options?")) return; start(async () => { await deleteQuestion(q.id); toast.success("Deleted"); }); }} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={15} /></button>
               </div>
             </div>
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {q.options.map((o) => (
-                <div key={o.id} className="flex items-center justify-between border border-line px-3 py-2">
-                  <div>
+                <div key={o.id} className="flex items-center justify-between gap-2 border border-line px-3 py-2">
+                  <div className="min-w-0">
                     <p className="text-sm text-ivory">{o.label}</p>
-                    <p className="text-xs text-muted">
+                    <p className="truncate text-xs text-muted">
                       {Object.keys(o.family_weights).join(", ") || "no weights"}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex shrink-0 gap-2">
                     <button onClick={() => { setOEdit(o); setOQuestionId(q.id); setODialog(true); }} className="text-muted hover:text-gold"><Pencil size={13} /></button>
                     <button onClick={() => { if (!confirm("Delete this option?")) return; start(async () => { await deleteOption(o.id); toast.success("Deleted"); }); }} disabled={pending} className="text-muted hover:text-rose"><Trash2 size={13} /></button>
                   </div>
@@ -102,7 +102,7 @@ export function QuizManager({ questions }: { questions: Question[] }) {
 
       {/* Question dialog */}
       <Dialog open={qDialog} onOpenChange={setQDialog}>
-        <DialogContent>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogTitle className="font-display text-2xl text-ivory">{qEdit ? "Edit" : "Add"} Question</DialogTitle>
           <form action={onSaveQuestion} className="mt-5 space-y-4">
             <div><Label htmlFor="prompt">Prompt</Label><Input id="prompt" name="prompt" defaultValue={qEdit?.prompt} required /></div>
@@ -115,7 +115,7 @@ export function QuizManager({ questions }: { questions: Question[] }) {
 
       {/* Option dialog */}
       <Dialog open={oDialog} onOpenChange={setODialog}>
-        <DialogContent>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogTitle className="font-display text-2xl text-ivory">{oEdit ? "Edit" : "Add"} Option</DialogTitle>
           <form action={onSaveOption} className="mt-5 space-y-4">
             <div><Label htmlFor="label">Label</Label><Input id="label" name="label" defaultValue={oEdit?.label} required /></div>

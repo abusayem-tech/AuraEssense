@@ -48,11 +48,11 @@ export default async function SuccessPage({
             <div className="mt-8 border border-line bg-onyx-soft p-6 text-left">
               <ul className="space-y-3">
                 {order.items?.map((it) => (
-                  <li key={it.id} className="flex justify-between text-sm">
-                    <span className="text-ivory-dim">
+                  <li key={it.id} className="flex justify-between gap-4 text-sm">
+                    <span className="break-words text-ivory-dim">
                       {it.product_name} · {it.size_ml}ml × {it.qty}
                     </span>
-                    <span className="text-ivory tnum">
+                    <span className="shrink-0 text-ivory tnum">
                       {formatBDT(it.unit_price * it.qty)}
                     </span>
                   </li>
@@ -74,13 +74,13 @@ export default async function SuccessPage({
             email.
           </p>
         )}
-        <div className="mt-8 flex justify-center gap-4">
-          <Button asChild>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/account/orders">
               <Package size={15} /> Track Your Order
             </Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/fragrances">Continue Shopping</Link>
           </Button>
         </div>

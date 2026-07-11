@@ -1,5 +1,4 @@
 import { EntityManager } from "@/components/admin/entity-manager";
-import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 import { saveBanner, deleteBanner } from "@/lib/actions/admin/marketing";
 
@@ -24,7 +23,7 @@ export default async function BannersPage() {
       columns={[
         { key: "title", label: "Title" },
         { key: "subtitle", label: "Subtitle" },
-        { key: "active", label: "Status", render: (b) => (b.active ? <Badge variant="emerald">Active</Badge> : <Badge variant="muted">Hidden</Badge>) },
+        { key: "active", label: "Status", format: "badge-hidden" },
       ]}
       fields={[
         { name: "title", label: "Title" },

@@ -1,12 +1,14 @@
 import { EntityManager } from "@/components/admin/entity-manager";
-import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 import { saveCollection, deleteCollection } from "@/lib/actions/admin/catalog";
 import type { Collection } from "@/types";
 
 export default async function AdminCollectionsPage() {
   const supabase = await createClient();
-  const { data } = await supabase.from("collections").select("*").order("position");
+  const { data } = await supabase
+    .from("collections")
+    .select("*")
+    .order("position");
   const collections = (data as unknown as Collection[]) ?? [];
 
   return (
@@ -17,11 +19,7 @@ export default async function AdminCollectionsPage() {
       columns={[
         { key: "name", label: "Name" },
         { key: "subtitle", label: "Subtitle" },
-        {
-          key: "is_featured",
-          label: "Featured",
-          render: (c) => (c.is_featured ? <Badge variant="gold">Featured</Badge> : "—"),
-        },
+        { key: "is_featured", label: "Featured", format: "badge-featured" },
       ]}
       fields={[
         { name: "name", label: "Name", required: true },

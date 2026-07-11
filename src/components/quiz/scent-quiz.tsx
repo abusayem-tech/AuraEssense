@@ -113,7 +113,7 @@ export function ScentQuiz({ questions }: { questions: Question[] }) {
           ))}
         </div>
 
-        <div className="mt-14 flex justify-center gap-4">
+        <div className="mt-14 flex flex-wrap justify-center gap-4">
           <Button onClick={restart} variant="outline">
             <RotateCcw size={15} /> Retake Quiz
           </Button>
@@ -167,8 +167,9 @@ export function ScentQuiz({ questions }: { questions: Question[] }) {
                 key={opt.id}
                 onClick={() => choose(opt)}
                 className={cn(
-                  "group border border-line-strong p-6 text-left transition-all hover:border-gold hover:bg-gold/5",
-                  answers[current.id] === opt.id && "border-gold bg-gold/5",
+                  "group border border-line-strong p-6 text-left transition-all hover:border-gold hover:bg-gold/10",
+                  answers[current.id] === opt.id &&
+                    "border-gold bg-gold/10 ring-1 ring-inset ring-gold/30",
                 )}
               >
                 <p className="font-display text-xl text-ivory transition-colors group-hover:text-gold">

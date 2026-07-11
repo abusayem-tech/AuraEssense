@@ -85,7 +85,7 @@ export function CommandSearch({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showClose={false} className="max-w-xl p-0 top-[15%] translate-y-0">
+      <DialogContent showClose={false} className="max-w-xl p-0 top-[15%] translate-y-0 max-h-[80dvh]">
         <DialogTitle className="sr-only">Search</DialogTitle>
         <form
           onSubmit={submit}

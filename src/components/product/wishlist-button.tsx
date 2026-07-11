@@ -50,7 +50,7 @@ export function WishlistButton({
       aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
       aria-pressed={wished}
       className={cn(
-        "flex h-9 w-9 items-center justify-center bg-onyx/70 backdrop-blur-sm transition-colors hover:bg-onyx",
+        "flex h-8 w-8 items-center justify-center border border-[var(--photo-text)]/20 bg-[var(--photo-ink)]/50 text-[var(--photo-text-dim)] backdrop-blur-md transition-colors hover:bg-[var(--photo-ink)]/80 hover:text-[var(--photo-text)]",
         className,
       )}
     >
@@ -58,7 +58,7 @@ export function WishlistButton({
         size={size}
         className={cn(
           "transition-all",
-          wished ? "fill-rose text-rose" : "text-ivory-dim hover:text-rose",
+          wished ? "fill-rose text-rose" : undefined,
         )}
         strokeWidth={1.5}
       />

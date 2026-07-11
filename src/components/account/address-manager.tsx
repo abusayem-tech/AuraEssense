@@ -23,7 +23,7 @@ export function AddressManager({ addresses }: { addresses: Address[] }) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-2xl text-ivory">Saved Addresses</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>

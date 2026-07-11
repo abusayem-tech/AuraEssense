@@ -17,11 +17,11 @@ export default function CancelPage() {
           You cancelled the payment. Your bag is still saved whenever you&apos;re
           ready.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Button asChild>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/checkout">Return to Checkout</Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/fragrances">Continue Shopping</Link>
           </Button>
         </div>

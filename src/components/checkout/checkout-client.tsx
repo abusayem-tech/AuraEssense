@@ -193,7 +193,9 @@ export function CheckoutClient({
                   key={opt.z}
                   onClick={() => setZone(opt.z)}
                   className={`flex items-center justify-between border p-4 text-left transition-colors ${
-                    zone === opt.z ? "border-gold bg-gold/5" : "border-line-strong hover:border-ivory-dim"
+                    zone === opt.z
+                      ? "border-gold bg-gold/10 ring-1 ring-inset ring-gold/30"
+                      : "border-line-strong hover:border-ivory-dim"
                   }`}
                 >
                   <span className="text-sm text-ivory">{opt.label}</span>
@@ -241,7 +243,7 @@ export function CheckoutClient({
                     <div>
                       <p className="text-sm text-ivory">{l.name}</p>
                       <p className="text-xs text-muted">
-                        {l.isSample ? "Sample" : `${l.sizeMl}ml`} × {l.qty}
+                        {`${l.sizeMl}ml`} × {l.qty}
                       </p>
                     </div>
                     <span className="text-sm text-ivory-dim tnum">
@@ -256,7 +258,7 @@ export function CheckoutClient({
             <div className="mt-6 border-t border-line pt-6">
               <Label>Promo or Gift Card</Label>
               <div className="flex gap-2">
-                <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter code" />
+                <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter code" className="min-w-0" />
                 <Button type="button" variant="outline" onClick={applyCode}>
                   <Tag size={14} /> Apply
                 </Button>

@@ -54,9 +54,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
+      <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="grain min-h-full bg-onyx text-ivory flex flex-col">

@@ -29,7 +29,7 @@ export function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("border border-line bg-onyx-soft p-5", className)}>
+    <div className={cn("min-w-0 border border-line bg-onyx-soft p-5", className)}>
       {children}
     </div>
   );

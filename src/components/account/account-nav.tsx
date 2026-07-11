@@ -26,7 +26,7 @@ const LINKS = [
 export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   return (
-    <nav className="flex flex-col">
+    <nav className="flex items-stretch overflow-x-auto border-b border-line lg:flex-col lg:overflow-visible lg:border-b-0">
       {LINKS.map((l) => {
         const active =
           l.href === "/account"
@@ -37,7 +37,7 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
             key={l.href}
             href={l.href}
             className={cn(
-              "flex items-center gap-3 border-l-2 px-4 py-3 text-sm transition-colors",
+              "flex shrink-0 items-center gap-3 whitespace-nowrap border-b-2 px-4 py-3 text-sm transition-colors lg:border-b-0 lg:border-l-2",
               active
                 ? "border-gold bg-onyx-soft text-ivory"
                 : "border-transparent text-ivory-dim hover:border-line-strong hover:text-ivory",
@@ -51,15 +51,15 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
       {isAdmin && (
         <Link
           href="/admin"
-          className="mt-2 flex items-center gap-3 border-l-2 border-transparent px-4 py-3 text-sm text-gold hover:bg-onyx-soft"
+          className="flex shrink-0 items-center gap-3 whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-sm text-gold hover:bg-onyx-soft lg:mt-2 lg:border-b-0 lg:border-l-2"
         >
           <ShieldCheck size={16} /> Admin Panel
         </Link>
       )}
-      <form action="/auth/signout" method="post" className="mt-2">
+      <form action="/auth/signout" method="post" className="shrink-0 lg:mt-2">
         <button
           type="submit"
-          className="flex w-full items-center gap-3 border-l-2 border-transparent px-4 py-3 text-sm text-ivory-dim transition-colors hover:text-rose"
+          className="flex w-full items-center gap-3 whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-sm text-ivory-dim transition-colors hover:text-rose lg:border-b-0 lg:border-l-2"
         >
           <LogOut size={16} /> Sign Out
         </button>

@@ -91,7 +91,7 @@ export function ReviewsSection({
                   </h4>
                 )}
                 {r.body && (
-                  <p className="mt-2 text-sm leading-relaxed text-ivory-dim">
+                  <p className="mt-2 text-sm leading-relaxed text-ivory-dim break-words">
                     {r.body}
                   </p>
                 )}

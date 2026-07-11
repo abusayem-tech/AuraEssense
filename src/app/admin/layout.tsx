@@ -31,23 +31,23 @@ export default async function AdminLayout({
         <AdminSidebar />
       </aside>
 
-      <div className="flex flex-1 flex-col lg:pl-64">
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
         {/* Topbar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-onyx/90 px-5 backdrop-blur-md">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <Sheet>
-              <SheetTrigger className="text-ivory lg:hidden" aria-label="Menu">
+              <SheetTrigger className="shrink-0 text-ivory lg:hidden" aria-label="Menu">
                 <Menu size={22} />
               </SheetTrigger>
               <SheetContent side="left" className="bg-onyx-soft p-0">
                 <AdminSidebar />
               </SheetContent>
             </Sheet>
-            <span className="text-sm text-muted">
+            <span className="truncate text-sm text-muted">
               Welcome, <span className="text-ivory">{profile.full_name ?? "Admin"}</span>
             </span>
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex shrink-0 items-center gap-4 sm:gap-5">
             <ThemeToggle />
             <Link
               href="/admin/notifications"
@@ -56,7 +56,7 @@ export default async function AdminLayout({
             >
               <Bell size={18} />
               {!!count && count > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[0.6rem] text-onyx tnum">
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[0.6rem] text-on-gold tnum">
                   {count}
                 </span>
               )}
@@ -65,12 +65,13 @@ export default async function AdminLayout({
               href="/"
               className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-ivory-dim hover:text-gold"
             >
-              <ExternalLink size={14} /> View Store
+              <ExternalLink size={14} />
+              <span className="hidden sm:inline">View Store</span>
             </Link>
           </div>
         </header>
 
-        <main className="flex-1 p-5 sm:p-8">{children}</main>
+        <main className="min-w-0 flex-1 p-5 sm:p-8">{children}</main>
       </div>
     </div>
   );

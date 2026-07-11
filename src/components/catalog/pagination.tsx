@@ -18,7 +18,7 @@ export function Pagination({ pageCount }: { pageCount: number }) {
   }
 
   return (
-    <div className="mt-16 flex items-center justify-center gap-2">
+    <div className="mt-16 flex flex-wrap items-center justify-center gap-2">
       <button
         onClick={() => goto(Math.max(1, page - 1))}
         disabled={page <= 1}
@@ -36,7 +36,7 @@ export function Pagination({ pageCount }: { pageCount: number }) {
             className={cn(
               "flex h-10 w-10 items-center justify-center border text-sm tnum transition-colors",
               p === page
-                ? "border-gold bg-gold text-onyx"
+                ? "border-gold bg-gold text-on-gold"
                 : "border-line text-ivory-dim hover:border-gold hover:text-gold",
             )}
           >

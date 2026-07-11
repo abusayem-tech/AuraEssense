@@ -1,5 +1,4 @@
 import { EntityManager } from "@/components/admin/entity-manager";
-import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 import { saveJournal, deleteJournal } from "@/lib/actions/admin/content";
 import type { JournalPost } from "@/types";
@@ -21,11 +20,7 @@ export default async function AdminJournalPage() {
       columns={[
         { key: "title", label: "Title" },
         { key: "author", label: "Author" },
-        {
-          key: "published",
-          label: "Status",
-          render: (p) => (p.published ? <Badge variant="emerald">Published</Badge> : <Badge variant="muted">Draft</Badge>),
-        },
+        { key: "published", label: "Status", format: "badge-published" },
       ]}
       fields={[
         { name: "title", label: "Title", required: true },
@@ -33,7 +28,11 @@ export default async function AdminJournalPage() {
         { name: "author", label: "Author", defaultValue: "AuraEssence" },
         { name: "cover", label: "Cover Image URL" },
         { name: "excerpt", label: "Excerpt", type: "textarea" },
-        { name: "body", label: "Body (paragraphs separated by blank lines)", type: "textarea" },
+        {
+          name: "body",
+          label: "Body (paragraphs separated by blank lines)",
+          type: "textarea",
+        },
         { name: "published", label: "Published", type: "checkbox" },
       ]}
       saveAction={saveJournal}

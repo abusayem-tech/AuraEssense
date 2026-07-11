@@ -42,7 +42,7 @@ export function ProductForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" defaultValue={product?.name} required />
@@ -91,7 +91,7 @@ export function ProductForm({
         <Textarea id="story" name="story" defaultValue={product?.story ?? ""} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <Label htmlFor="top_notes">Top Notes (comma-separated)</Label>
           <Input id="top_notes" name="top_notes" defaultValue={product?.top_notes?.join(", ")} />
@@ -114,7 +114,7 @@ export function ProductForm({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="longevity">Longevity (1-5)</Label>
           <Input id="longevity" name="longevity" type="number" min={1} max={5} defaultValue={product?.longevity ?? 3} />
@@ -125,7 +125,7 @@ export function ProductForm({
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-ivory-dim">
           <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} className="accent-[var(--gold)]" /> Active
         </label>

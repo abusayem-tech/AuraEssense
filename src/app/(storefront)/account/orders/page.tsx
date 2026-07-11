@@ -39,7 +39,7 @@ export default async function OrdersPage() {
         <Link
           key={o.id}
           href={`/account/orders/${o.id}`}
-          className="block border border-line bg-onyx-soft p-6 transition-colors hover:border-gold"
+          className="block border border-line bg-onyx-soft p-4 transition-colors hover:border-gold sm:p-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -48,8 +48,8 @@ export default async function OrdersPage() {
             </div>
             <OrderStatusBadge status={o.status} />
           </div>
-          <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
-            <p className="text-sm text-muted">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-4">
+            <p className="break-words text-sm text-muted">
               {o.items?.length ?? 0} item{(o.items?.length ?? 0) === 1 ? "" : "s"}
               {o.paperfly_tracking_id ? ` · AWB ${o.paperfly_tracking_id}` : ""}
             </p>

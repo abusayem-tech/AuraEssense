@@ -34,9 +34,9 @@ export default async function CustomerDetailPage({
       <h1 className="mb-1 mt-4 font-display text-3xl text-ivory">{p.full_name ?? "Unnamed"}</h1>
       <p className="text-sm text-muted">{p.phone ?? "No phone"} · Joined {formatDate(p.created_at)}</p>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-          <div className="grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <StatCard label="Lifetime Value" value={formatBDT(ltv)} />
             <StatCard label="Orders" value={String(paid.length)} />
             <StatCard label="Loyalty Points" value={String(p.loyalty_points)} />
@@ -49,9 +49,9 @@ export default async function CustomerDetailPage({
               <ul className="divide-y divide-line">
                 {customerOrders.map((o) => (
                   <li key={o.id}>
-                    <Link href={`/admin/orders/${o.id}`} className="flex items-center justify-between py-3 hover:text-ivory">
+                    <Link href={`/admin/orders/${o.id}`} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3 hover:text-ivory">
                       <span className="text-sm text-ivory">{o.order_no}</span>
-                      <span className="flex items-center gap-3">
+                      <span className="flex flex-wrap items-center justify-end gap-3">
                         <span className="text-xs text-muted">{formatDate(o.created_at)}</span>
                         <OrderStatusBadge status={o.status} />
                         <span className="text-sm text-ivory-dim tnum">{formatBDT(o.total)}</span>

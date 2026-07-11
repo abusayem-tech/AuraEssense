@@ -25,7 +25,7 @@ export default async function AnalyticsPage({
         title="Sales & Analytics"
         description={`Insights across the last ${days} days.`}
         action={
-          <div className="flex border border-line">
+          <div className="flex flex-wrap border border-line">
             {RANGES.map((r) => (
               <Link
                 key={r.days}
@@ -41,7 +41,7 @@ export default async function AnalyticsPage({
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue" value={formatBDT(a.revenue)} trend={a.revenueTrend} />
         <StatCard label="Orders" value={String(a.orders)} trend={a.ordersTrend} />
         <StatCard label="Avg. Order Value" value={formatBDT(a.aov)} />
@@ -57,7 +57,7 @@ export default async function AnalyticsPage({
         <RevenueChart data={a.series} />
       </Card>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <p className="mb-4 text-[0.65rem] uppercase tracking-widest text-muted">Sales by Brand</p>
           {a.byBrand.length ? <MiniBars data={a.byBrand} /> : <Empty />}
@@ -72,7 +72,7 @@ export default async function AnalyticsPage({
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <p className="mb-4 text-[0.65rem] uppercase tracking-widest text-muted">Best Sellers</p>
           <Table>

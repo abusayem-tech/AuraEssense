@@ -23,7 +23,7 @@ export function NewsletterForm({
           name="email"
           required
           placeholder="Your email address"
-          className="flex-1 bg-transparent py-3 text-sm text-ivory placeholder:text-muted focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent py-3 text-sm text-ivory placeholder:text-muted focus:outline-none"
           aria-label="Email address"
         />
         <button

@@ -33,7 +33,7 @@ export function QuickAdd({ product }: { product: Product }) {
           description: `${product.name} · ${variant.size_ml}ml`,
         });
       }}
-      className="flex w-full items-center justify-center gap-2 bg-ivory/95 py-3 text-xs uppercase tracking-widest text-onyx backdrop-blur-sm transition-colors hover:bg-gold"
+      className="flex w-full items-center justify-center gap-2 bg-[var(--photo-text)]/95 py-3 text-xs uppercase tracking-widest text-[var(--photo-ink)] backdrop-blur-sm transition-colors hover:bg-gold hover:text-[var(--photo-ink)]"
     >
       <ShoppingBag size={14} />
       Quick Add · {variant.size_ml}ml

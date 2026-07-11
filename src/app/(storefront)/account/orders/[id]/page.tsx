@@ -52,7 +52,7 @@ export default async function OrderDetailPage({
         <OrderStatusBadge status={order.status} />
       </div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-12">
+      <div className="mt-8 grid gap-8 md:mt-10 md:gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <h3 className="eyebrow !mb-4">Items</h3>
           <ul className="space-y-4">
@@ -61,17 +61,17 @@ export default async function OrderDetailPage({
                 <div className="relative h-20 w-16 shrink-0 overflow-hidden bg-onyx-raised">
                   <ProductImage src={it.image_url} alt={it.product_name} initial={it.product_name} sizes="64px" />
                 </div>
-                <div className="flex flex-1 justify-between">
-                  <div>
+                <div className="flex flex-1 justify-between gap-3">
+                  <div className="min-w-0">
                     <p className="text-[0.6rem] uppercase tracking-widest text-muted">
                       {it.brand_name}
                     </p>
-                    <p className="text-ivory">{it.product_name}</p>
+                    <p className="break-words text-ivory">{it.product_name}</p>
                     <p className="mt-1 text-xs text-muted">
                       {it.size_ml}ml × {it.qty}
                     </p>
                   </div>
-                  <span className="text-sm text-ivory tnum">
+                  <span className="shrink-0 text-sm text-ivory tnum">
                     {formatBDT(it.unit_price * it.qty)}
                   </span>
                 </div>
@@ -83,24 +83,24 @@ export default async function OrderDetailPage({
             <h3 className="eyebrow !mb-4">Delivery Address</h3>
             <p className="text-sm text-ivory">{order.recipient}</p>
             <p className="text-sm text-muted">{order.phone}</p>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 break-words text-sm text-muted">
               {order.address_line}, {order.area}, {order.city}
             </p>
           </div>
         </div>
 
         <div className="lg:col-span-5">
-          <div className="border border-line bg-onyx-soft p-6">
+          <div className="border border-line bg-onyx-soft p-5 sm:p-6">
             <h3 className="eyebrow !mb-4">Tracking</h3>
             {order.paperfly_tracking_id && (
               <p className="mb-5 text-xs text-muted">
-                AWB: <span className="text-gold">{order.paperfly_tracking_id}</span>
+                AWB: <span className="break-all text-gold">{order.paperfly_tracking_id}</span>
               </p>
             )}
             <TrackingTimeline events={events} currentStatus={order.status} />
           </div>
 
-          <div className="mt-6 border border-line p-6">
+          <div className="mt-6 border border-line p-5 sm:p-6">
             <h3 className="eyebrow !mb-4">Summary</h3>
             <dl className="space-y-2 text-sm">
               <Row label="Subtotal" value={formatBDT(order.subtotal)} />

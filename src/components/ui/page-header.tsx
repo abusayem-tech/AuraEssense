@@ -13,7 +13,7 @@ export function PageHeader({
     <div className="border-b border-line pt-28 pb-12 lg:pt-36">
       <Container className="text-center">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="mt-4 font-display text-5xl text-ivory sm:text-6xl">
+        <h1 className="mt-4 font-display text-4xl text-ivory min-[420px]:text-5xl sm:text-6xl break-words">
           {title}
         </h1>
         {description && (

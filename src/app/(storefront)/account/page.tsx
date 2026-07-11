@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package, Sparkles, Heart, ArrowRight } from "lucide-react";
+import { Package, Sparkles, Heart, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderStatusBadge } from "@/components/account/order-status-badge";
 import { getProfile } from "@/lib/auth";
@@ -23,6 +23,7 @@ export default async function AccountOverview() {
     ]);
 
   const recent = (orders as unknown as Order[]) ?? [];
+  const isAdmin = profile?.role === "admin";
 
   const stats = [
     { icon: Sparkles, label: "Reward Points", value: profile?.loyalty_points ?? 0, href: "/account/loyalty" },
@@ -32,6 +33,28 @@ export default async function AccountOverview() {
 
   return (
     <div className="space-y-10">
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className="group flex flex-col gap-4 border border-gold/40 bg-gold/10 p-6 transition-colors hover:border-gold hover:bg-gold/15 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex items-start gap-4">
+            <ShieldCheck size={22} className="mt-0.5 shrink-0 text-gold" />
+            <div>
+              <p className="text-xs uppercase tracking-widest text-gold">Admin access</p>
+              <h2 className="mt-1 font-display text-2xl text-ivory">Open Admin Panel</h2>
+              <p className="mt-1 text-sm text-muted">
+                Manage products, orders, customers, and store settings.
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-gold">
+            Go to /admin{" "}
+            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+          </span>
+        </Link>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-3">
         {stats.map((s) => (
           <Link
@@ -68,7 +91,7 @@ export default async function AccountOverview() {
               <li key={o.id}>
                 <Link
                   href={`/account/orders/${o.id}`}
-                  className="flex items-center justify-between gap-4 p-5 transition-colors hover:bg-onyx-soft"
+                  className="flex flex-col gap-3 p-4 transition-colors hover:bg-onyx-soft sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
                 >
                   <div>
                     <p className="text-sm text-ivory">{o.order_no}</p>
@@ -76,7 +99,7 @@ export default async function AccountOverview() {
                       {formatDate(o.created_at)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                     <OrderStatusBadge status={o.status} />
                     <span className="text-sm text-ivory tnum">
                       {formatBDT(o.total)}

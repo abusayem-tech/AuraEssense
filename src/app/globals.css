@@ -21,9 +21,24 @@
   --line: rgba(245, 241, 233, 0.1);
   --line-strong: rgba(245, 241, 233, 0.18);
 
+  /* Fixed ink used on photo overlays so light mode doesn't wash them out */
+  --photo-ink: #0b0b0c;
+  --photo-text: #f5f1e9;
+  --photo-text-dim: #c9c4b8;
+  /* Champagne accents on dark photo scrims — never flip with theme gold */
+  --photo-gold: #c8a96a;
+  --photo-gold-soft: #e8d5a8;
+  --photo-on-gold: #0b0b0c;
+
   /* Mode-specific surfaces referenced by hardcoded UI (scrollbar, etc.) */
   --scrollbar-thumb: #2a2a2e;
   --scrollbar-thumb-hover: #3a3a3f;
+  --shimmer-a: rgba(245, 241, 233, 0.04);
+  --shimmer-b: rgba(245, 241, 233, 0.09);
+  --grain-opacity: 0.035;
+
+  /* Ink on gold CTAs — flips so contrast stays strong in both themes */
+  --on-gold: #0b0b0c;
 
   --background: var(--onyx);
   --foreground: var(--ivory);
@@ -37,21 +52,36 @@
 .light {
   color-scheme: light;
 
-  --onyx: #f6f3ec;
-  --onyx-soft: #efe9dd;
-  --onyx-raised: #e7e0d1;
+  --onyx: #f3eee4;
+  --onyx-soft: #fffcf7;
+  --onyx-raised: #ebe4d6;
   --ivory: #17171a;
-  --ivory-dim: #514d44;
-  --muted: #7a7468;
-  --gold: #9c7c3e;
-  --gold-soft: #876a32;
+  --ivory-dim: #3f3b34;
+  --muted: #6a655b;
+  --gold: #8a6b30;
+  --gold-soft: #755925;
   --rose: #9c6b6b;
   --emerald: #3d6657;
-  --line: rgba(20, 18, 14, 0.12);
-  --line-strong: rgba(20, 18, 14, 0.2);
+  --line: rgba(23, 23, 26, 0.14);
+  --line-strong: rgba(23, 23, 26, 0.24);
 
-  --scrollbar-thumb: #cdc6b6;
-  --scrollbar-thumb-hover: #b9b1a0;
+  --photo-ink: #0b0b0c;
+  --photo-text: #f5f1e9;
+  --photo-text-dim: #d5cfc3;
+  --photo-gold: #c8a96a;
+  --photo-gold-soft: #e8d5a8;
+  --photo-on-gold: #0b0b0c;
+
+  --scrollbar-thumb: #c4bdae;
+  --scrollbar-thumb-hover: #aea796;
+  --shimmer-a: rgba(23, 23, 26, 0.04);
+  --shimmer-b: rgba(23, 23, 26, 0.09);
+  --grain-opacity: 0.018;
+
+  --on-gold: #f5f1e9;
+
+  --background: var(--onyx);
+  --foreground: var(--ivory);
 }
 
 @theme inline {
@@ -67,6 +97,13 @@
   --color-emerald: var(--emerald);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
+  --color-on-gold: var(--on-gold);
+  --color-photo-ink: var(--photo-ink);
+  --color-photo-text: var(--photo-text);
+  --color-photo-text-dim: var(--photo-text-dim);
+  --color-photo-gold: var(--photo-gold);
+  --color-photo-gold-soft: var(--photo-gold-soft);
+  --color-photo-on-gold: var(--photo-on-gold);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -130,7 +167,7 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -209,12 +246,43 @@ body {
 .shimmer {
   background: linear-gradient(
     90deg,
-    rgba(245, 241, 233, 0.04) 25%,
-    rgba(245, 241, 233, 0.09) 37%,
-    rgba(245, 241, 233, 0.04) 63%
+    var(--shimmer-a) 25%,
+    var(--shimmer-b) 37%,
+    var(--shimmer-a) 63%
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Photo overlays stay dark in both themes so text on imagery stays legible */
+.photo-scrim {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--photo-ink) 70%, transparent),
+    color-mix(in oklab, var(--photo-ink) 45%, transparent),
+    var(--photo-ink)
+  );
+}
+.photo-scrim-soft {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--photo-ink) 85%, transparent),
+    color-mix(in oklab, var(--photo-ink) 20%, transparent),
+    transparent
+  );
+}
+.photo-text {
+  color: var(--photo-text);
+}
+.photo-text-dim {
+  color: var(--photo-text-dim);
+}
+.photo-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--photo-gold);
+  font-weight: 500;
 }
 
 /* Sheet / dialog -------------------------------------------------------- */

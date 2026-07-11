@@ -32,14 +32,14 @@ export default async function AdminDashboard() {
         description="Performance over the last 30 days."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue (30d)" value={formatBDT(analytics.revenue)} trend={analytics.revenueTrend} />
         <StatCard label="Orders (30d)" value={String(analytics.orders)} trend={analytics.ordersTrend} />
         <StatCard label="Avg. Order Value" value={formatBDT(analytics.aov)} sub={`${analytics.units} units sold`} />
         <StatCard label="New Customers" value={String(analytics.newCustomers)} sub={`${analytics.returningRate.toFixed(0)}% returning`} />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <p className="mb-4 text-[0.65rem] uppercase tracking-widest text-muted">
             Revenue Trend
@@ -58,7 +58,7 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Fulfillment queue */}
         <Card>
           <div className="mb-4 flex items-center justify-between">
@@ -73,9 +73,9 @@ export default async function AdminDashboard() {
             <ul className="divide-y divide-line">
               {fulfillmentQueue.map((o) => (
                 <li key={o.id}>
-                  <Link href={`/admin/orders/${o.id}`} className="flex items-center justify-between py-3 hover:text-ivory">
+                  <Link href={`/admin/orders/${o.id}`} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3 hover:text-ivory">
                     <span className="text-sm text-ivory">{o.order_no}</span>
-                    <span className="flex items-center gap-3">
+                    <span className="flex flex-wrap items-center justify-end gap-3">
                       <OrderStatusBadge status={o.status} />
                       <span className="text-sm text-ivory-dim tnum">{formatBDT(o.total)}</span>
                     </span>
@@ -96,7 +96,7 @@ export default async function AdminDashboard() {
           ) : (
             <ul className="divide-y divide-line">
               {analytics.lowStock.map((s, i) => (
-                <li key={i} className="flex items-center justify-between py-3">
+                <li key={i} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3">
                   <span className="text-sm text-ivory-dim">
                     {s.name} · {s.size}ml
                   </span>

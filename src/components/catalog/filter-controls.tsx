@@ -35,7 +35,7 @@ function CheckRow({
       <span
         className={cn(
           "flex h-4 w-4 shrink-0 items-center justify-center border transition-colors",
-          active ? "border-gold bg-gold text-onyx" : "border-line-strong",
+          active ? "border-gold bg-gold text-on-gold" : "border-line-strong",
         )}
       >
         {active && <Check size={11} strokeWidth={3} />}
@@ -150,7 +150,7 @@ export function MobileFilters(props: { brands: Brand[]; families: FragranceFamil
       <SheetContent side="left" showClose={false}>
         <div className="flex items-center justify-between border-b border-line px-6 py-5">
           <SheetTitle className="font-display text-xl text-ivory">Filters</SheetTitle>
-          <SheetClose className="text-muted hover:text-ivory"><X size={20} /></SheetClose>
+          <SheetClose className="-m-2 p-2 text-muted hover:text-ivory"><X size={20} /></SheetClose>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-2">
           <FiltersBody {...props} />

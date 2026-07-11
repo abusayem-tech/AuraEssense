@@ -22,10 +22,13 @@ export function BuyBox({
   wished: boolean;
 }) {
   const variants = useMemo(
-    () => (product.variants ?? []).slice().sort((a, b) => Number(a.is_sample) - Number(b.is_sample) || a.size_ml - b.size_ml),
+    () => (product.variants ?? []).slice().sort((a, b) => a.size_ml - b.size_ml),
     [product.variants],
   );
-  const firstAvailable = variants.find((v) => v.stock > 0) ?? variants[0];
+  const firstAvailable =
+    variants.find((v) => !v.is_sample && v.stock > 0) ??
+    variants.find((v) => v.stock > 0) ??
+    variants[0];
   const [selected, setSelected] = useState<ProductVariant | undefined>(firstAvailable);
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
@@ -54,7 +57,7 @@ export function BuyBox({
       qty,
     );
     toast.success("Added to your bag", {
-      description: `${product.name} · ${selected.is_sample ? "Sample" : selected.size_ml + "ml"} × ${qty}`,
+      description: `${product.name} · ${selected.size_ml}ml × ${qty}`,
     });
   }
 
@@ -62,11 +65,18 @@ export function BuyBox({
     <div>
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="font-display text-4xl text-ivory tnum">{formatBDT(price)}</span>
+        <span className="font-display text-4xl text-ivory tnum">
+          <span className="mr-1 font-sans text-[0.65em] font-normal tracking-normal opacity-75">
+            ৳
+          </span>
+          {formatBDT(price).replace(/^৳\s*/, "")}
+        </span>
         {onSale && (
           <>
             <span className="text-lg text-muted line-through tnum">{formatBDT(selected.price_bdt)}</span>
-            <span className="bg-gold/15 px-2 py-0.5 text-xs text-gold">-{discountPercent(selected)}%</span>
+            <span className="bg-gold px-2 py-0.5 text-xs font-medium tracking-wide text-on-gold">
+              -{discountPercent(selected)}%
+            </span>
           </>
         )}
       </div>
@@ -84,12 +94,14 @@ export function BuyBox({
                 disabled={vSoldOut}
                 className={cn(
                   "relative border px-4 py-3 text-left transition-colors",
-                  selected.id === v.id ? "border-gold bg-gold/5" : "border-line-strong hover:border-ivory-dim",
+                  selected.id === v.id
+                    ? "border-gold bg-gold/15 ring-1 ring-inset ring-gold/35"
+                    : "border-line-strong hover:border-ivory-dim",
                   vSoldOut && "opacity-40",
                 )}
               >
                 <span className="block text-sm text-ivory">
-                  {v.is_sample ? "Sample" : `${v.size_ml}ml`}
+                  {`${v.size_ml}ml`}
                 </span>
                 <span className="mt-0.5 block text-xs text-muted tnum">
                   {formatBDT(variantPrice(v))}
@@ -122,7 +134,7 @@ export function BuyBox({
               <Plus size={15} />
             </button>
           </div>
-          <Button onClick={handleAdd} size="lg" className="flex-1">
+          <Button onClick={handleAdd} size="lg" className="min-w-0 flex-1 px-4 sm:px-10">
             <ShoppingBag size={16} /> Add to Bag
           </Button>
           <div className="flex items-center justify-center border border-line-strong px-1">

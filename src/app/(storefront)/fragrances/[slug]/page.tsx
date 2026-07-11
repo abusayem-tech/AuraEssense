@@ -95,7 +95,7 @@ export default async function ProductPage({
 
       <Container className="pt-28 lg:pt-36">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-xs text-muted">
+        <nav className="mb-8 flex flex-wrap items-center gap-2 text-xs text-muted">
           <Link href="/" className="hover:text-ivory">Home</Link>
           <ChevronRight size={12} />
           <Link href="/fragrances" className="hover:text-ivory">Fragrances</Link>
@@ -118,7 +118,7 @@ export default async function ProductPage({
             <h1 className="mt-3 font-display text-4xl text-ivory sm:text-5xl">
               {product.name}
             </h1>
-            <div className="mt-4 flex items-center gap-4">
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
               <Rating value={product.rating_avg} count={product.rating_count} />
               <div className="flex gap-2">
                 <Badge variant="outline" className="capitalize">{product.gender}</Badge>
@@ -154,13 +154,13 @@ export default async function ProductPage({
       </Container>
 
       {/* Story + Pyramid */}
-      <section className="bg-onyx-soft py-24 mt-24">
+      <section className="bg-onyx-soft py-16 mt-16 md:py-24 md:mt-24">
         <Container>
-          <div className="grid gap-16 lg:grid-cols-2">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <Reveal>
               <div>
                 <p className="eyebrow">The Story</p>
-                <h2 className="mt-4 font-display text-4xl text-ivory">
+                <h2 className="mt-4 font-display text-3xl sm:text-4xl text-ivory">
                   An Olfactory Journey
                 </h2>
                 <p className="mt-6 leading-relaxed text-ivory-dim">
@@ -201,7 +201,7 @@ export default async function ProductPage({
 
       {/* Pairs with */}
       {pairs.length > 0 && (
-        <Container className="py-24">
+        <Container className="py-16 md:py-24">
           <SectionHeading eyebrow="Layer It" title="Pairs Beautifully With" align="center" />
           <div className="mt-12">
             <ProductGrid products={pairs} wishlist={wishlist} columns={4} />
@@ -210,7 +210,7 @@ export default async function ProductPage({
       )}
 
       {/* Reviews */}
-      <Container className="py-24 border-t border-line">
+      <Container className="py-16 md:py-24 border-t border-line">
         <SectionHeading eyebrow="Reviews" title="What Our Clients Say" />
         <div className="mt-12">
           <ReviewsSection product={product} reviews={reviews} isAuthed={!!user} />
@@ -219,7 +219,7 @@ export default async function ProductPage({
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="bg-onyx-soft py-24">
+        <section className="bg-onyx-soft py-16 md:py-24">
           <Container>
             <SectionHeading eyebrow="Discover More" title="You May Also Like" align="center" />
             <div className="mt-12">

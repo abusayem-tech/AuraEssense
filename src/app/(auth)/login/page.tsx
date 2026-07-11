@@ -19,7 +19,7 @@ export default async function LoginPage() {
         <p className="eyebrow">Welcome</p>
         <h1 className="mt-3 font-display text-4xl text-ivory">Sign In</h1>
         <p className="mt-2 text-sm text-muted">
-          Access your orders, wishlist and rewards.
+          Access your orders, wishlist and rewards with email or Google.
         </p>
       </div>
       <Suspense fallback={<div className="h-64" />}>

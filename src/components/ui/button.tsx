@@ -9,11 +9,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-gold text-onyx hover:bg-gold-soft tracking-wide uppercase text-xs",
+          "bg-gold text-on-gold hover:bg-gold-soft tracking-wide uppercase text-xs",
         outline:
           "border border-line-strong text-ivory hover:border-gold hover:text-gold bg-transparent tracking-wide uppercase text-xs",
         ghost: "text-ivory-dim hover:text-ivory hover:bg-onyx-raised",
-        solid: "bg-ivory text-onyx hover:bg-white tracking-wide uppercase text-xs",
+        solid: "bg-ivory text-onyx hover:bg-ivory/90 tracking-wide uppercase text-xs",
         danger:
           "border border-rose/40 text-rose hover:bg-rose/10 tracking-wide uppercase text-xs",
         link: "text-gold hover:text-gold-soft underline-offset-4 hover:underline p-0 h-auto",

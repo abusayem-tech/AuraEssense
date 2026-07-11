@@ -1,63 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Loader2, Mail, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { authCallbackUrl, safeAuthRedirect } from "@/lib/auth-redirect";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { GoogleIcon } from "@/components/auth/google-icon";
 import { toast } from "sonner";
 
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24">
-      <path
-        fill="currentColor"
-        d="M21.35 11.1H12v3.83h5.35a4.58 4.58 0 0 1-1.98 3.01v2.5h3.2c1.87-1.72 2.95-4.26 2.95-7.28 0-.68-.06-1.34-.17-1.96z"
-      />
-      <path
-        fill="currentColor"
-        d="M12 22c2.7 0 4.96-.9 6.62-2.43l-3.2-2.5c-.9.6-2.05.96-3.42.96-2.63 0-4.86-1.78-5.66-4.17H3.04v2.6A10 10 0 0 0 12 22z"
-        opacity="0.7"
-      />
-      <path
-        fill="currentColor"
-        d="M6.34 13.86A6 6 0 0 1 6.02 12c0-.65.11-1.28.31-1.86V7.54H3.04A10 10 0 0 0 2 12c0 1.62.39 3.15 1.04 4.46l3.3-2.6z"
-        opacity="0.5"
-      />
-      <path
-        fill="currentColor"
-        d="M12 5.97c1.48 0 2.8.51 3.85 1.5l2.84-2.84C16.95 2.99 14.7 2 12 2A10 10 0 0 0 3.04 7.54l3.3 2.6C7.14 7.75 9.37 5.97 12 5.97z"
-        opacity="0.85"
-      />
-    </svg>
-  );
-}
-
 export function LoginForm() {
+  const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get("redirect") ?? "/account";
+  const redirect = safeAuthRedirect(params.get("redirect"));
+  const authError = params.get("error");
+
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [sent, setSent] = useState(false);
 
-  async function sendMagicLink(e: React.FormEvent) {
+  async function signInWithPassword(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
-      },
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
       toast.error(error.message);
       return;
     }
-    setSent(true);
+    toast.success("Welcome back");
+    router.replace(redirect);
+    router.refresh();
   }
 
   async function signInWithGoogle() {
@@ -65,9 +43,7 @@ export function LoginForm() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
-      },
+      options: { redirectTo: authCallbackUrl(redirect) },
     });
     if (error) {
       setGoogleLoading(false);
@@ -75,41 +51,23 @@ export function LoginForm() {
     }
   }
 
-  if (sent) {
-    return (
-      <div className="text-center">
-        <CheckCircle2 className="mx-auto mb-5 text-emerald" size={44} />
-        <h2 className="font-display text-2xl text-ivory">Check your inbox</h2>
-        <p className="mt-3 text-sm text-muted">
-          We&apos;ve sent a secure sign-in link to
-          <br />
-          <span className="text-ivory">{email}</span>
-        </p>
-        <button
-          onClick={() => setSent(false)}
-          className="mt-6 text-xs uppercase tracking-widest text-gold hover:text-gold-soft"
-        >
-          Use a different email
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div>
+      {authError && (
+        <p className="mb-5 border border-rose/30 bg-rose/10 px-4 py-3 text-center text-xs text-rose">
+          Authentication failed. Please try again.
+        </p>
+      )}
+
       <Button
         type="button"
         variant="outline"
         size="lg"
         className="w-full"
         onClick={signInWithGoogle}
-        disabled={googleLoading}
+        disabled={googleLoading || loading}
       >
-        {googleLoading ? (
-          <Loader2 className="animate-spin" size={18} />
-        ) : (
-          <GoogleIcon />
-        )}
+        {googleLoading ? <Loader2 className="animate-spin" size={18} /> : <GoogleIcon />}
         Continue with Google
       </Button>
 
@@ -119,28 +77,70 @@ export function LoginForm() {
         <div className="h-px flex-1 bg-line" />
       </div>
 
-      <form onSubmit={sendMagicLink}>
-        <Label htmlFor="email">Email address</Label>
-        <Input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-        />
-        <Button type="submit" size="lg" className="mt-4 w-full" disabled={loading}>
-          {loading ? (
-            <Loader2 className="animate-spin" size={18} />
-          ) : (
-            <Mail size={16} />
-          )}
-          Send Magic Link
+      <form onSubmit={signInWithPassword} className="space-y-4">
+        <div>
+          <Label htmlFor="email">Email address</Label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+          />
+        </div>
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <Label htmlFor="password" className="!mb-0">
+              Password
+            </Label>
+            <Link
+              href={`/forgot-password?redirect=${encodeURIComponent(redirect)}`}
+              className="text-[0.65rem] uppercase tracking-widest text-muted hover:text-gold"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              className="pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ivory"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+        <Button type="submit" size="lg" className="w-full" disabled={loading || googleLoading}>
+          {loading ? <Loader2 className="animate-spin" size={18} /> : <Lock size={16} />}
+          Sign In
         </Button>
       </form>
-      <p className="mt-6 text-center text-xs leading-relaxed text-muted">
-        Passwordless &amp; secure. We&apos;ll email you a one-time sign-in link —
-        no password required.
+
+      <p className="mt-6 text-center text-sm text-muted">
+        New to AuraEssence?{" "}
+        <Link
+          href={`/signup?redirect=${encodeURIComponent(redirect)}`}
+          className="text-gold hover:text-gold-soft"
+        >
+          Create an account
+        </Link>
+      </p>
+      <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[0.65rem] uppercase tracking-widest text-muted">
+        <Mail size={12} /> Email &amp; password or Google
       </p>
     </div>
   );

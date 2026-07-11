@@ -11,25 +11,35 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   useEffect(() => setMounted(true), []);
 
+  // Avoid hydration mismatch — render a stable placeholder until mounted.
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        aria-label="Toggle theme"
+        className={cn(
+          "-m-2 p-2 text-ivory-dim transition-colors hover:text-gold",
+          className,
+        )}
+      >
+        <Sun size={19} className="opacity-0" />
+      </button>
+    );
+  }
+
   const isDark = resolvedTheme === "dark";
 
   return (
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={
-        !mounted
-          ? "Toggle theme"
-          : isDark
-            ? "Switch to light mode"
-            : "Switch to dark mode"
-      }
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
-        "text-ivory-dim transition-colors hover:text-gold",
+        "-m-2 p-2 text-ivory-dim transition-colors hover:text-gold",
         className,
       )}
     >
-      {mounted && !isDark ? <Moon size={19} /> : <Sun size={19} />}
+      {isDark ? <Sun size={19} /> : <Moon size={19} />}
     </button>
   );
 }

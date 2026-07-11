@@ -24,7 +24,7 @@ export default async function JournalPage() {
         title="Notes & Stories"
         description="Guides, rituals and reflections on the art of fragrance."
       />
-      <Container className="py-16">
+      <Container className="py-12 md:py-16">
         {posts.length === 0 ? (
           <EmptyState title="No stories yet" />
         ) : (

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { DEFAULTS } from "@/lib/constants";
 
 export interface ResolvedSettings {
@@ -16,8 +16,9 @@ export interface ResolvedSettings {
   deliveryFeeOutside: number;
 }
 
+/** Public store config — service role so guests still resolve fees after RLS lockdown. */
 export async function getSettings(): Promise<ResolvedSettings> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const [{ data: s }, { data: zones }] = await Promise.all([
     supabase.from("store_settings").select("*").maybeSingle(),
     supabase.from("shipping_zones").select("*"),

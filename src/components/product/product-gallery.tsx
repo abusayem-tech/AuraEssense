@@ -31,7 +31,7 @@ export function ProductGallery({
     <div className="flex flex-col-reverse gap-4 lg:flex-row">
       {/* Thumbnails */}
       {list.length > 1 && (
-        <div className="flex gap-3 lg:flex-col">
+        <div className="flex gap-3 overflow-x-auto lg:flex-col lg:overflow-visible">
           {list.map((img, i) => (
             <button
               key={img.id}
@@ -56,7 +56,10 @@ export function ProductGallery({
         onMouseMove={onMove}
       >
         <div
-          className={cn("h-full w-full transition-transform duration-200", zoom && "scale-[1.8]")}
+          className={cn(
+            "relative h-full w-full transition-transform duration-200",
+            zoom && "scale-[1.8]",
+          )}
           style={zoom ? { transformOrigin: `${pos.x}% ${pos.y}%` } : undefined}
         >
           <ProductImage

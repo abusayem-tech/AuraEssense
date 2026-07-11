@@ -16,7 +16,7 @@ export default async function QuizPage() {
     <div className="pt-28 lg:pt-36">
       <Container className="text-center">
         <p className="eyebrow">Discover</p>
-        <h1 className="mt-4 font-display text-5xl text-ivory sm:text-6xl">
+        <h1 className="mt-4 font-display text-4xl text-ivory sm:text-6xl">
           The Scent Quiz
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-ivory-dim">

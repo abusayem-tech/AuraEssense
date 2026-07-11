@@ -31,7 +31,7 @@ export function CartSheet({
             <ShoppingBag size={20} className="text-gold" />
             Your Bag
           </SheetTitle>
-          <SheetClose className="text-muted hover:text-ivory transition-colors">
+          <SheetClose className="-m-2 p-2 text-muted hover:text-ivory transition-colors">
             <X size={20} />
           </SheetClose>
         </div>
@@ -95,7 +95,7 @@ export function CartSheet({
                             {line.name}
                           </Link>
                           <p className="mt-0.5 text-xs text-muted">
-                            {line.isSample ? "Sample" : `${line.sizeMl}ml`}
+                            {`${line.sizeMl}ml`}
                           </p>
                         </div>
                         <button

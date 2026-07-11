@@ -15,11 +15,11 @@ export default function FailPage() {
           We couldn&apos;t process your payment. Your bag has been saved — please
           try again.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Button asChild>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/checkout">Try Again</Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/fragrances">Continue Shopping</Link>
           </Button>
         </div>

@@ -39,14 +39,14 @@ export default async function CollectionsPage() {
                   className="transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width:768px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-onyx via-onyx/30 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-8">
-                  <p className="eyebrow !mb-2">{c.subtitle}</p>
-                  <h2 className="font-display text-3xl text-ivory">{c.name}</h2>
-                  <p className="mt-2 max-w-md text-sm text-ivory-dim">
+                <div className="photo-scrim-soft absolute inset-0" />
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                  <p className="photo-eyebrow !mb-2">{c.subtitle}</p>
+                  <h2 className="photo-text font-display text-2xl sm:text-3xl">{c.name}</h2>
+                  <p className="photo-text-dim mt-2 line-clamp-2 max-w-md text-sm sm:line-clamp-none">
                     {c.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-gold">
+                  <span className="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-photo-gold">
                     Explore <ArrowRight size={14} />
                   </span>
                 </div>

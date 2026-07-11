@@ -42,20 +42,20 @@ export default async function JournalPostPage({
           <p className="eyebrow">
             {formatDate(post.published_at)} · {post.author}
           </p>
-          <h1 className="mt-4 font-display text-4xl text-ivory sm:text-5xl">
+          <h1 className="mt-4 break-words font-display text-4xl text-ivory sm:text-5xl">
             {post.title}
           </h1>
         </div>
       </Container>
 
-      <Container className="mt-12 max-w-4xl">
+      <Container className="mt-8 max-w-4xl md:mt-12">
         <div className="relative aspect-[16/9] overflow-hidden bg-onyx-raised">
           <ProductImage src={post.cover} alt={post.title} initial={post.title} priority sizes="100vw" />
         </div>
       </Container>
 
-      <Container className="my-16 max-w-2xl">
-        <div className="space-y-6 text-lg leading-relaxed text-ivory-dim">
+      <Container className="my-12 max-w-2xl md:my-16">
+        <div className="space-y-6 text-base leading-relaxed text-ivory-dim md:text-lg">
           {post.body.split("\n\n").map((para, i) => (
             <p key={i}>{para}</p>
           ))}

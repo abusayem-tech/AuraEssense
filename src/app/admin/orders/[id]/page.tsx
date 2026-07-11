@@ -43,8 +43,8 @@ export default async function AdminOrderDetail({
         <OrderStatusBadge status={order.status} />
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           <Card>
             <p className="mb-4 text-[0.65rem] uppercase tracking-widest text-muted">Items</p>
             <div className="overflow-x-auto">
@@ -76,12 +76,12 @@ export default async function AdminOrderDetail({
             </div>
           </Card>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <Card>
               <p className="mb-3 text-[0.65rem] uppercase tracking-widest text-muted">Customer</p>
               <p className="text-ivory">{order.recipient}</p>
               <p className="text-sm text-muted">{order.phone}</p>
-              <p className="text-sm text-muted">{order.email}</p>
+              <p className="break-words text-sm text-muted">{order.email}</p>
               <p className="mt-2 text-sm text-ivory-dim">
                 {order.address_line}, {order.area}, {order.city}
               </p>
@@ -98,7 +98,7 @@ export default async function AdminOrderDetail({
             <Card>
               <p className="mb-3 text-[0.65rem] uppercase tracking-widest text-muted">Tracking</p>
               {order.paperfly_tracking_id && (
-                <p className="mb-4 text-xs text-muted">AWB <span className="text-gold">{order.paperfly_tracking_id}</span></p>
+                <p className="mb-4 text-xs text-muted">AWB <span className="break-all text-gold">{order.paperfly_tracking_id}</span></p>
               )}
               <TrackingTimeline events={events} currentStatus={order.status} />
             </Card>

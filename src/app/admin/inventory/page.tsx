@@ -35,7 +35,7 @@ export default async function InventoryPage() {
     <div>
       <AdminHeader title="Inventory" description="Stock levels across all variants." />
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard label="Total Units" value={String(totalUnits)} />
         <StatCard label="Low Stock Variants" value={String(lowCount)} />
         <StatCard label="Inventory Value" value={formatBDT(value)} />
@@ -60,7 +60,7 @@ export default async function InventoryPage() {
               <tr key={r.id}>
                 <Td className="text-ivory">{r.product?.name}</Td>
                 <Td>{r.product?.brand?.name}</Td>
-                <Td>{r.is_sample ? "Sample" : `${r.size_ml}ml`}</Td>
+                <Td>{`${r.size_ml}ml`}</Td>
                 <Td className="text-xs">{r.sku}</Td>
                 <Td className="tnum">{formatBDT(r.sale_price_bdt ?? r.price_bdt)}</Td>
                 <Td><StockAdjuster variantId={r.id} stock={r.stock} /></Td>

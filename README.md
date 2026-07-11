@@ -15,7 +15,7 @@ It features a complete editorial storefront, a scent-profile quiz, multi-size va
 - **Scent Profile Quiz** with weighted matching that returns your top-3 in-stock fragrances.
 - **Cart & checkout** — persistent slide-over cart, delivery zones (Dhaka/Outside), promo codes, gift cards, gift wrapping, loyalty redemption.
 - **Account** — profile, address book, order history with **visual tracking timeline**, wishlist, loyalty rewards.
-- **Auth** — passwordless magic links + Google OAuth (Supabase), HTTP-only cookie sessions.
+- **Auth** — email/password + Google OAuth (Supabase), HTTP-only cookie sessions.
 - **Editorial** — Journal, collections, and editable content pages (About, FAQ, Shipping, Privacy, Terms).
 
 ### Admin Console (`/admin`, role-gated)
@@ -68,8 +68,18 @@ cp .env.example .env.local
 | `LOGISTICS_PROVIDER` | `mock` (default) or `live` |
 
 ### 4. Configure Auth (Supabase Dashboard)
-- Enable **Email** (magic link) and **Google** providers.
-- Add redirect URL: `http://localhost:3000/auth/callback` (and your production URL).
+- Enable **Email** provider with **password** sign-in (email confirmation optional for local testing).
+- Enable **Google** provider and add your Google OAuth Client ID + Secret.
+- Auth URL configuration (Site URL + Redirect URLs):
+  - **Site URL (production):** `https://auraessense.vercel.app`
+  - Redirect allow list should include:
+    - `http://localhost:3000/**` (local)
+    - `https://auraessense.vercel.app/**` (production)
+    - `https://*-abusayem.vercel.app/**` (Vercel previews)
+- Google authorized redirect URI (in Google Cloud Console):
+  - `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
+
+Sign-in lives at `/login`, sign-up at `/signup`, password reset at `/forgot-password`.
 
 ### 5. Run
 ```bash

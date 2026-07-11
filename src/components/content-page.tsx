@@ -22,7 +22,7 @@ export async function ContentPageView({ slug }: { slug: string }) {
   return (
     <>
       <PageHeader eyebrow="AuraEssence" title={page.title} />
-      <Container className="my-16 max-w-2xl">
+      <Container className="my-10 max-w-2xl md:my-16">
         <div className="space-y-6 leading-relaxed text-ivory-dim">
           {page.body.split("\n\n").map((para, i) => (
             <p key={i} className="whitespace-pre-line">

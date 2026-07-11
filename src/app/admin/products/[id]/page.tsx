@@ -33,7 +33,7 @@ export default async function EditProductPage({
 
   return (
     <div className="max-w-4xl">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link href="/admin/products" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted hover:text-gold">
           <ArrowLeft size={14} /> Back to Products
         </Link>
