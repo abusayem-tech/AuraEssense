@@ -251,6 +251,18 @@ export interface ShippingZone {
   est_days: string;
 }
 
+export interface Banner {
+  id: string;
+  title: string | null;
+  subtitle: string | null;
+  image: string | null;
+  link: string | null;
+  cta_label: string | null;
+  position: number;
+  active: boolean;
+  created_at: string;
+}
+
 export interface AdminNotification {
   id: string;
   type: string;

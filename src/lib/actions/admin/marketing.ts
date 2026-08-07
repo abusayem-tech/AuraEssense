@@ -80,6 +80,8 @@ export async function saveBanner(formData: FormData): Promise<{ ok: boolean }> {
   if (id) await supabase.from("banners").update(payload).eq("id", id);
   else await supabase.from("banners").insert(payload);
   revalidatePath("/admin/banners");
+  revalidatePath("/", "layout");
+  revalidatePath("/");
   return { ok: true };
 }
 
@@ -88,6 +90,8 @@ export async function deleteBanner(id: string): Promise<{ ok: boolean }> {
   const supabase = createAdminClient();
   await supabase.from("banners").delete().eq("id", id);
   revalidatePath("/admin/banners");
+  revalidatePath("/", "layout");
+  revalidatePath("/");
   return { ok: true };
 }
 

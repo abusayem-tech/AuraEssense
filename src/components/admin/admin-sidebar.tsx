@@ -19,7 +19,6 @@ import {
   Mail,
   HelpCircle,
   Newspaper,
-  FileText,
   Settings,
   ScrollText,
 } from "lucide-react";
@@ -63,13 +62,7 @@ const GROUPS: {
       { href: "/admin/banners", label: "Banners", icon: ImageIcon },
       { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
       { href: "/admin/quiz", label: "Quiz", icon: HelpCircle },
-    ],
-  },
-  {
-    label: "Content",
-    items: [
       { href: "/admin/journal", label: "Journal", icon: Newspaper },
-      { href: "/admin/pages", label: "Pages", icon: FileText },
     ],
   },
   {

@@ -17,13 +17,17 @@ import {
 import { CommandSearch } from "@/components/search/command-search";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AccountMenu } from "@/components/account/account-menu";
+import { PromoStrip } from "@/components/layout/promo-strip";
+import type { Banner } from "@/types";
 
 export function Header({
   isAuthed,
   isAdmin,
+  banners = [],
 }: {
   isAuthed: boolean;
   isAdmin: boolean;
+  banners?: Banner[];
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -73,6 +77,7 @@ export function Header({
             : "bg-transparent border-b border-transparent",
         )}
       >
+        <PromoStrip banners={banners} />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 xl:h-20">
           {/* Left: mobile menu + logo + desktop nav */}
           <div className="flex items-center gap-4 sm:gap-6 xl:gap-10">

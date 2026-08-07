@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdminHeader, Table, Th, Td, EmptyRow } from "@/components/admin/admin-ui";
 import { Badge } from "@/components/ui/badge";
+import { RoleSelect } from "@/components/admin/role-select";
 import { createClient } from "@/lib/supabase/server";
 import { formatBDT, formatDate } from "@/lib/format";
 
@@ -68,7 +69,7 @@ export default async function CustomersPage() {
                   <Td className="tnum text-ivory">{formatBDT(s.spend)}</Td>
                   <Td className="tnum">{c.loyalty_points}</Td>
                   <Td>
-                    {c.role === "admin" ? <Badge variant="gold">Admin</Badge> : <Badge variant="muted">Customer</Badge>}
+                    <RoleSelect userId={c.id} role={c.role} />
                   </Td>
                 </tr>
               );

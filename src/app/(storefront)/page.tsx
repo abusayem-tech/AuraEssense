@@ -2,12 +2,14 @@ import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Hero } from "@/components/home/hero";
 import { BrandMarquee } from "@/components/home/brand-marquee";
+import { CampaignBanners } from "@/components/home/campaign-banners";
 import { ProductGrid } from "@/components/product/product-grid";
 import { ProductImage } from "@/components/product/product-image";
 import { Container, SectionHeading, Divider } from "@/components/ui/misc";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
 import {
+  getActiveBanners,
   getBrands,
   getCollections,
   getFamilies,
@@ -20,7 +22,7 @@ import { formatDate } from "@/lib/format";
 export const revalidate = 120;
 
 export default async function HomePage() {
-  const [featured, collections, families, brands, journal, wishlist] =
+  const [featured, collections, families, brands, journal, wishlist, banners] =
     await Promise.all([
       getFeaturedProducts(8),
       getCollections(true),
@@ -28,6 +30,7 @@ export default async function HomePage() {
       getBrands(),
       getJournalPosts(3),
       getWishlistIds(),
+      getActiveBanners(),
     ]);
 
   return (
@@ -35,6 +38,8 @@ export default async function HomePage() {
       <Hero />
 
       <BrandMarquee brands={brands} />
+
+      <CampaignBanners banners={banners} />
 
       {/* Featured */}
       <Container className="py-16 md:py-24">

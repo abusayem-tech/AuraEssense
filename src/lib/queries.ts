@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type {
+  Banner,
   Brand,
   Collection,
   FragranceFamily,
@@ -249,4 +250,14 @@ export async function getContentPage(slug: string) {
     .eq("slug", slug)
     .maybeSingle();
   return data as { title: string; body: string } | null;
+}
+
+export async function getActiveBanners(): Promise<Banner[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .order("position", { ascending: true });
+  return (data as unknown as Banner[]) ?? [];
 }

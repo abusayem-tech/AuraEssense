@@ -47,6 +47,6 @@ export async function savePage(
     .from("content_pages")
     .upsert({ slug, title, body, updated_at: new Date().toISOString() }, { onConflict: "slug" });
   revalidatePath(`/${slug}`);
-  revalidatePath("/admin/pages");
+  revalidatePath("/admin/settings");
   return { ok: true };
 }

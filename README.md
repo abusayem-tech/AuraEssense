@@ -181,17 +181,12 @@ Access: authenticated users with `profiles.role = 'admin'`. Roles are binary (`c
 | Banners | `/admin/banners` | CRUD: title, subtitle, image, link, CTA, active |
 | Newsletter | `/admin/newsletter` | Subscriber list; total count; **Export CSV** |
 | Scent quiz editor | `/admin/quiz` | CRUD questions & options; family_weights + note_weights JSON |
-
-### Content (CMS)
-| Feature | Route | Description |
-|---|---|---|
 | Journal | `/admin/journal` | CRUD: title, slug, author, cover, excerpt, body, published |
-| Pages | `/admin/pages` | Edit `about`, `faq`, `shipping-returns`, `privacy`, `terms` |
 
 ### System
 | Feature | Route | Description |
 |---|---|---|
-| Settings | `/admin/settings` | Store name, contact email/phone; free-ship threshold, gift-wrap fee, loyalty earn rate, tax rate, low-stock threshold; payment & logistics mock↔live; shipping zones (fee, free-ship min, ETA days) |
+| Settings | `/admin/settings` | Store name, contact, fees, loyalty/tax, low-stock threshold; payment & logistics mock↔live; shipping zones; content pages (`about`, `faq`, `shipping-returns`, `privacy`, `terms`) |
 | Audit log | `/admin/audit` | Last 200 admin actions (actor, action, entity, time) |
 | Notifications | `/admin/notifications` | Topbar bell; unread badge; new paid orders, Paperfly failures, contact messages; mark all read |
 | Admin shell | `/admin/*` | Collapsible sidebar, theme toggle, “View Store”, welcome name |

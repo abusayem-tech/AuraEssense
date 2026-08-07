@@ -1,19 +1,34 @@
 import { AdminHeader } from "@/components/admin/admin-ui";
 import { SettingsForm } from "@/components/admin/settings-form";
+import { PagesEditor } from "@/components/admin/pages-editor";
 import { createClient } from "@/lib/supabase/server";
+
+const DEFAULT_SLUGS = ["about", "faq", "shipping-returns", "privacy", "terms"];
 
 export default async function AdminSettingsPage() {
   const supabase = await createClient();
-  const [{ data: settings }, { data: zones }] = await Promise.all([
-    supabase.from("store_settings").select("*").maybeSingle(),
-    supabase.from("shipping_zones").select("*").order("zone"),
-  ]);
+  const [{ data: settings }, { data: zones }, { data: pagesData }] =
+    await Promise.all([
+      supabase.from("store_settings").select("*").maybeSingle(),
+      supabase.from("shipping_zones").select("*").order("zone"),
+      supabase.from("content_pages").select("slug, title, body"),
+    ]);
 
   const s = (settings as Record<string, unknown> | null) ?? {};
+  const existing =
+    (pagesData as unknown as { slug: string; title: string; body: string }[]) ??
+    [];
+  const pages = DEFAULT_SLUGS.map((slug) => {
+    const found = existing.find((p) => p.slug === slug);
+    return found ?? { slug, title: slug.replace("-", " "), body: "" };
+  });
 
   return (
     <div>
-      <AdminHeader title="Settings" description="Configure your store without redeploying." />
+      <AdminHeader
+        title="Settings"
+        description="Store configuration, shipping, and informational pages."
+      />
       <SettingsForm
         settings={{
           store_name: String(s.store_name ?? "AuraEssence"),
@@ -38,6 +53,14 @@ export default async function AdminSettingsPage() {
           }[]) ?? []
         }
       />
+
+      <div className="mt-10">
+        <h2 className="mb-2 font-display text-2xl text-ivory">Content Pages</h2>
+        <p className="mb-6 text-sm text-muted">
+          Edit about, FAQ, shipping, privacy, and terms pages shown on the storefront.
+        </p>
+        <PagesEditor pages={pages} />
+      </div>
     </div>
   );
 }
