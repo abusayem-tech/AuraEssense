@@ -1,40 +1,200 @@
 # AuraEssence — Luxury Perfume E-Commerce
 
-A world-class, dark-luxury perfume e-commerce platform for the Bangladeshi market, built with **Next.js 16 (App Router)**, **Supabase** (PostgreSQL, Auth, Storage, RLS), **Tailwind CSS v4**, and deployable on **Vercel**.
+A dark-luxury perfume e-commerce platform for the Bangladeshi market, built with **Next.js 16 (App Router)**, **Supabase** (PostgreSQL, Auth, Storage, RLS), **Tailwind CSS v4**, and deployable on **Vercel**.
 
-It features a complete editorial storefront, a scent-profile quiz, multi-size variants & discovery samples, gifting, loyalty, reviews, a full operations **admin console**, and mocked **SSL Commerze** (payments) + **Paperfly** (logistics) integrations behind clean, swappable interfaces.
-
----
-
-## Features
-
-### Storefront
-- **Cinematic home** with parallax hero, featured edit, collections, brand marquee, family explorer, journal, newsletter.
-- **Catalog** with URL-synced multi-parameter filtering (brand, gender, concentration, family, season, occasion, **olfactory notes**, price), sorting, pagination, ⌘K command search.
-- **Product pages** with image gallery + zoom, animated **olfactory pyramid**, longevity/sillage meters, **size/variant selector** (30/50/100ml + samples), back-in-stock alerts, verified reviews, "pairs well with" layering, related products, JSON-LD.
-- **Scent Profile Quiz** with weighted matching that returns your top-3 in-stock fragrances.
-- **Cart & checkout** — persistent slide-over cart, delivery zones (Dhaka/Outside), promo codes, gift cards, gift wrapping, loyalty redemption.
-- **Account** — profile, address book, order history with **visual tracking timeline**, wishlist, loyalty rewards.
-- **Auth** — email/password + Google OAuth (Supabase), HTTP-only cookie sessions.
-- **Editorial** — Journal, collections, and editable content pages (About, FAQ, Shipping, Privacy, Terms).
-
-### Admin Console (`/admin`, role-gated)
-- **Dashboard** — revenue/orders KPIs with trends, revenue chart, fulfillment queue, low-stock & recent orders.
-- **Sales & Analytics** — revenue over time, sales by brand/product/zone, AOV, repeat rate, LTV, best sellers, inventory valuation, date ranges.
-- **Catalog** — products + variants + images CRUD, brands, families, collections, inventory adjustments.
-- **Orders** — status pipeline, order events, refunds (with stock restore), internal notes, **one-click Push-to-Paperfly** with retry/queue.
-- **Customers (CRM)** — LTV, loyalty adjustments, roles (RBAC), block/flag, notes.
-- **Marketing** — promo codes, gift cards, banners, reviews moderation, quiz editor, newsletter export.
-- **Content** — journal editor, editable static pages.
-- **System** — store settings, shipping zones/fees, **provider toggles (mock↔live)**, audit log, notifications.
+Prices in **BDT (৳)**. Payments (**SSL Commerze**) and logistics (**Paperfly**) are mocked by default behind swappable interfaces.
 
 ---
 
 ## Tech Stack
-- Next.js 16 (App Router, RSC, Server Actions) + TypeScript
-- Supabase (PostgreSQL + RLS, Auth, Storage)
-- Tailwind CSS v4, Radix UI primitives, Framer Motion, Recharts, Lucide
-- Zustand (cart), nuqs (URL filter state), Zod (validation)
+
+- **Next.js 16** (App Router, RSC, Server Actions) + TypeScript + React 19
+- **Supabase** (PostgreSQL + RLS, Auth, Storage)
+- **Tailwind CSS v4**, Radix UI, Framer Motion, Recharts, Lucide, Embla
+- **Zustand** (cart), **nuqs** (URL filters), Zod + React Hook Form
+- **Vercel**-oriented deploy; `next-themes` light/dark
+
+---
+
+## Customer Features (Storefront)
+
+### Home & global chrome
+| Feature | Route / location | Description |
+|---|---|---|
+| Cinematic home | `/` | Parallax hero, brand marquee, featured products, collection teasers, scent-quiz CTA, olfactory-family explorer, journal preview |
+| Header nav | Global | Fragrances, Brands, Collections, Scent Quiz, Journal; search, wishlist, account, cart badge, theme toggle |
+| Mobile nav | Global | Sheet navigation for small screens |
+| Slide-over cart | Global | Persistent bag (Zustand + localStorage); qty/remove; free-shipping progress; checkout CTA |
+| ⌘K command search | Global | Product + brand search via `GET /api/search` |
+| Theme toggle | Global | Light / dark (`next-themes`) |
+| Footer | Global | Shop / House / Care / Legal links, newsletter, social, contact |
+| Toasts & route progress | Global | Feedback toasts; subtle navigation progress |
+
+### Catalog & discovery
+| Feature | Route | Description |
+|---|---|---|
+| All fragrances | `/fragrances` | Paginated grid (12/page), empty state |
+| Multi-parameter filters | `/fragrances` | URL-synced: brand, gender, concentration, family, season, occasion, olfactory notes, price min/max, samples-only |
+| Sorting | `/fragrances` | Featured, newest, price asc/desc, rating |
+| Active filter chips | `/fragrances` | Clear individual filters; desktop + mobile filter UIs |
+| Text | `/fragrances?q=` + ⌘K | Catalog text search + command palette |
+| Brands index | `/brands` | Maison grid with country |
+| Brand page | `/brands/[slug]` | Brand story + products |
+| Collections index | `/collections` | Curated sets |
+| Collection page | `/collections/[slug]` | Collection products |
+| Product cards | Catalog grids | Hover image swap, sale/featured/sold-out badges, rating, price, wishlist heart, quick-add |
+| Discovery samples | `/fragrances?samples=1` | Sample variants + samples-only filter |
+| Gender shortcuts | Footer links | For Him / Her / Unisex |
+
+### Product detail (PDP)
+| Feature | Route | Description |
+|---|---|---|
+| Product page | `/fragrances/[slug]` | Breadcrumbs, brand, gender/concentration badges, description |
+| Image gallery + zoom | PDP | Thumbnails + mouse zoom |
+| Size / variant selector | PDP | 30/50/100ml + discovery samples; sale price & % off |
+| Add to bag & quantity | PDP | Low-stock warning |
+| Back-in-stock alerts | PDP | Email notify when a sold-out variant returns |
+| Wishlist toggle | PDP / cards | Save / remove (auth) |
+| Longevity & sillage meters | PDP | Spec meters |
+| Olfactory pyramid | PDP | Animated top / heart / base notes |
+| Layering (“pairs well with”) | PDP | Recommended pairings |
+| Related products | PDP | “You may also like” |
+| Reviews | PDP | Aggregate rating, distribution, verified-purchase list; submit (auth); helpful votes |
+| Trust row | PDP | Authentic / nationwide delivery / easy returns |
+| SEO | PDP | JSON-LD Product schema + Open Graph |
+| Image fallback | Global media | On-brand placeholder if remote image fails |
+
+### Scent Profile Quiz
+| Feature | Route | Description |
+|---|---|---|
+| Multi-step quiz | `/quiz` | Weighted questions → top-3 in-stock fragrance matches; restart |
+
+### Cart & checkout
+| Feature | Route | Description |
+|---|---|---|
+| Checkout | `/checkout` | Contact & delivery; guest or signed-in |
+| Delivery zones | Checkout | Dhaka / Outside + fees |
+| Free shipping threshold | Checkout / cart | From store settings (default ৳8000) |
+| Promo codes | Checkout | Percent, fixed, free-shipping (preview + apply) |
+| Gift cards | Checkout | Balance applied at checkout |
+| Gift wrapping | Checkout | Paid wrap + personal message |
+| Loyalty redemption | Checkout | Points as BDT off (signed-in) |
+| Zero-total checkout | Checkout | Gift card / loyalty can skip payment gateway |
+| Mock SSL Commerze pay | `/checkout/mock-pay` | Simulate success / fail / cancel |
+| Order success | `/checkout/success` | Confirmation; clears cart |
+| Payment fail / cancel | `/checkout/fail`, `/checkout/cancel` | Failure paths |
+
+### Auth
+| Feature | Route | Description |
+|---|---|---|
+| Login | `/login` | Email/password + Google OAuth; redirect support |
+| Sign up | `/signup` | Account creation |
+| Forgot password | `/forgot-password` | Reset request |
+| Update password | `/update-password` | Set new password |
+| OAuth callback | `/auth/callback` | Supabase session exchange |
+| Sign out | `/auth/signout` | Ends session |
+| Cookie sessions | Middleware | HTTP-only cookies; guards `/account` |
+
+### Account (authenticated)
+| Feature | Route | Description |
+|---|---|---|
+| Overview | `/account` | Loyalty / orders / wishlist stats; recent orders; admin shortcut if role=`admin` |
+| Order history | `/account/orders` | Status badges; track order |
+| Order detail | `/account/orders/[id]` | Line items, address, Paperfly AWB, **visual tracking timeline**, totals |
+| Wishlist | `/account/wishlist` | Saved products grid |
+| Addresses | `/account/addresses` | Add / delete / set default; zone; checkout prefill |
+| Loyalty / Rewards | `/account/loyalty` | Balance (1 pt ≈ ৳1), ~2% earn, transaction history |
+| Profile | `/account/profile` | Update name & phone (email read-only) |
+
+### Editorial & content
+| Feature | Route | Description |
+|---|---|---|
+| Journal index | `/journal` | Articles list |
+| Journal article | `/journal/[slug]` | Full post |
+| About | `/about` | CMS page |
+| FAQ | `/faq` | CMS page |
+| Shipping & Returns | `/shipping-returns` | CMS page |
+| Privacy | `/privacy` | CMS page |
+| Terms | `/terms` | CMS page |
+| Contact | `/contact` | Concierge details + contact form |
+
+### Engagement
+| Feature | Location | Description |
+|---|---|---|
+| Newsletter subscribe | Footer | Source-tagged signup |
+| Contact form | `/contact` | Inquiry → admin notification |
+| Sale pricing | Catalog / PDP | Strike-through + % off |
+| Order status (visible) | Account | pending → paid → processing → dispatched → in_transit → delivered (+ cancelled / failed / refunded) |
+
+---
+
+## Admin Features (`/admin`, role-gated)
+
+Access: authenticated users with `profiles.role = 'admin'`. Roles are binary (`customer` | `admin`) — no staff/superadmin tiers.
+
+### Dashboard & analytics
+| Feature | Route | Description |
+|---|---|---|
+| Dashboard | `/admin` | 30-day KPIs (revenue, orders, AOV, new customers + trends); revenue chart; top brands; fulfillment queue; low-stock alerts; recent orders |
+| Sales & Analytics | `/admin/analytics` | Ranges 7 / 30 / 90 days; revenue, orders, AOV, units, repeat rate, new customers, failed payments, inventory valuation; revenue chart; sales by brand & zone; best sellers; top customers (LTV); orders-by-status |
+
+### Catalog
+| Feature | Route | Description |
+|---|---|---|
+| Products list | `/admin/products` | Thumbnail, brand, from-price, stock, active/hidden |
+| Product create / edit | `/admin/products/new`, `/admin/products/[id]` | Name, slug, SKU base, brand, family, gender, concentration, description, story, notes, season, occasion, longevity, sillage, active, featured |
+| Variants | Product editor | Size (ml), SKU, price, sale price, stock, sample flag; add/delete |
+| Images | Product editor | Add by URL, delete, ordered by position; “View Live” to storefront |
+| Delete product | Product editor | Danger zone |
+| Brands | `/admin/brands` | CRUD: name, slug, country, logo URL, description (delete blocked if products exist) |
+| Fragrance families | `/admin/families` | CRUD: name, slug, accent color, description |
+| Collections | `/admin/collections` | CRUD: name, slug, subtitle, cover, description, featured-on-homepage |
+| Inventory | `/admin/inventory` | All variants by stock; total units / low-stock / value; per-variant +/- adjuster (`inventory_logs`) |
+
+### Orders
+| Feature | Route | Description |
+|---|---|---|
+| Orders list | `/admin/orders` | Filter by status; order #, customer, date, status, Paperfly tracking, total |
+| Order detail | `/admin/orders/[id]` | Line items, fees/discounts/gift wrap/loyalty, customer + address + gift message, tracking timeline |
+| Push to Paperfly | Order detail | One-click shipment / AWB; retry count + notification on failure |
+| Advance tracking | Order detail | Mock status: dispatched → in_transit → delivered |
+| Manual status | Order detail | Set status (paid/refunded via payment/refund flows) |
+| Internal notes | Order detail | Admin-only notes |
+| Refund | Order detail | Restores stock, reverses loyalty, releases promo usage |
+
+### Customers (CRM)
+| Feature | Route | Description |
+|---|---|---|
+| Customers list | `/admin/customers` | Name, phone, order count, LTV, loyalty points, role, blocked badge |
+| Customer detail | `/admin/customers/[id]` | LTV / orders / points; order history links |
+| Loyalty adjust | Customer detail | ± points with reason |
+| CRM notes | Customer detail | Internal notes |
+| Grant / revoke admin | Customer detail | Cannot revoke self; at least one admin remains |
+| Block / unblock | Customer detail | Flag customers |
+
+### Marketing
+| Feature | Route | Description |
+|---|---|---|
+| Promo codes | `/admin/promo-codes` | CRUD: code, type (percent / fixed / free_ship), value, min order, usage limit, expiry, active; used vs limit |
+| Gift cards | `/admin/gift-cards` | Create code + amount; status active / disabled / depleted; delete |
+| Reviews moderation | `/admin/reviews` | Approve / reject / delete; verified-purchase badge |
+| Banners | `/admin/banners` | CRUD: title, subtitle, image, link, CTA, active |
+| Newsletter | `/admin/newsletter` | Subscriber list; total count; **Export CSV** |
+| Scent quiz editor | `/admin/quiz` | CRUD questions & options; family_weights + note_weights JSON |
+
+### Content (CMS)
+| Feature | Route | Description |
+|---|---|---|
+| Journal | `/admin/journal` | CRUD: title, slug, author, cover, excerpt, body, published |
+| Pages | `/admin/pages` | Edit `about`, `faq`, `shipping-returns`, `privacy`, `terms` |
+
+### System
+| Feature | Route | Description |
+|---|---|---|
+| Settings | `/admin/settings` | Store name, contact email/phone; free-ship threshold, gift-wrap fee, loyalty earn rate, tax rate, low-stock threshold; payment & logistics mock↔live; shipping zones (fee, free-ship min, ETA days) |
+| Audit log | `/admin/audit` | Last 200 admin actions (actor, action, entity, time) |
+| Notifications | `/admin/notifications` | Topbar bell; unread badge; new paid orders, Paperfly failures, contact messages; mark all read |
+| Admin shell | `/admin/*` | Collapsible sidebar, theme toggle, “View Store”, welcome name |
 
 ---
 
@@ -55,10 +215,10 @@ Apply the SQL in order via the **Supabase MCP** (recommended) or the SQL editor 
 > Using the Supabase MCP: ask the agent to apply each migration with `apply_migration`, then run the seed. Afterwards, `gen types` can replace `src/lib/supabase/types.ts` for stronger typing.
 
 ### 3. Environment
-Copy `.env.example` to `.env.local` and fill in your Supabase keys:
 ```bash
 cp .env.example .env.local
 ```
+
 | Variable | Description |
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
@@ -72,14 +232,14 @@ cp .env.example .env.local
 - Enable **Google** provider and add your Google OAuth Client ID + Secret.
 - Auth URL configuration (Site URL + Redirect URLs):
   - **Site URL (production):** `https://auraessense.vercel.app`
-  - Redirect allow list should include:
+  - Redirect allow list:
     - `http://localhost:3000/**` (local)
     - `https://auraessense.vercel.app/**` (production)
     - `https://*-abusayem.vercel.app/**` (Vercel previews)
-- Google authorized redirect URI (in Google Cloud Console):
+- Google authorized redirect URI (Google Cloud Console):
   - `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
 
-Sign-in lives at `/login`, sign-up at `/signup`, password reset at `/forgot-password`.
+Sign-in: `/login` · Sign-up: `/signup` · Password reset: `/forgot-password`.
 
 ### 5. Run
 ```bash
@@ -88,7 +248,7 @@ npm run dev
 Visit `http://localhost:3000`.
 
 ### 6. Make yourself an admin
-After signing in once, set your profile role to `admin`:
+After signing in once:
 ```sql
 update profiles set role = 'admin' where id = '<your-auth-user-id>';
 ```
@@ -98,25 +258,28 @@ Then open `/admin`.
 
 ## Integrations (mocked, swappable)
 
-Payments and logistics are abstracted behind interfaces so real credentials can be dropped in later **without touching business logic**:
+Payments and logistics sit behind interfaces so live credentials can drop in later without changing business logic:
 
-- **Payments** — `src/lib/payments/payment-gateway.ts` (`MockSslCommerzeGateway` ↔ `SslCommerzeGateway`). The mock renders a hosted "payment page" at `/checkout/mock-pay`; on success the IPN logic marks the order paid, decrements stock, and awards loyalty.
-- **Logistics** — `src/lib/logistics/logistics-provider.ts` (`MockPaperfly` ↔ `PaperflyProvider`). The mock generates an AWB tracking number; the webhook (`/api/webhooks/paperfly`) syncs delivery status.
+- **Payments** — `src/lib/payments/payment-gateway.ts` (`MockSslCommerzeGateway` ↔ `SslCommerzeGateway`). Mock hosted page: `/checkout/mock-pay`. On success, IPN marks paid, decrements stock, awards loyalty.
+- **Logistics** — `src/lib/logistics/logistics-provider.ts` (`MockPaperfly` ↔ `PaperflyProvider`). Mock AWB; webhook syncs delivery status.
 
-Switch to live by setting `PAYMENT_PROVIDER=live` / `LOGISTICS_PROVIDER=live` (or the admin **Settings** toggles) and implementing the provider stubs with real API calls + credentials.
+Switch via `PAYMENT_PROVIDER=live` / `LOGISTICS_PROVIDER=live` or admin **Settings** toggles, then implement provider stubs with real API calls + credentials.
 
-Webhooks:
-- `POST /api/webhooks/sslcommerz` — payment IPN
-- `POST /api/webhooks/paperfly` — delivery status
+| Webhook | Purpose |
+|---|---|
+| `POST /api/webhooks/sslcommerz` | Payment IPN |
+| `POST /api/webhooks/paperfly` | Delivery status |
 
 ---
 
 ## Images
-Product imagery uses **royalty-free Unsplash placeholders** (not trademarked brand photos). Fragrance names and olfactory notes are real for authenticity; prices, stock, SKUs, reviews and customers are illustrative/dummy. A graceful on-brand fallback renders if any remote image fails. To use your own images, add them per-product in the admin (or upload to a Supabase Storage bucket and paste the URL).
+
+Product imagery uses **royalty-free Unsplash placeholders** (not trademarked brand photos). Fragrance names and olfactory notes are real for authenticity; prices, stock, SKUs, reviews and customers are illustrative/dummy. A graceful on-brand fallback renders if any remote image fails. Add your own images per-product in admin (or upload to Supabase Storage and paste the URL).
 
 ---
 
 ## Deploy to Vercel
+
 1. Push to GitHub and import the repo into Vercel.
 2. Add the environment variables from `.env.local` to the Vercel project.
 3. Set `NEXT_PUBLIC_SITE_URL` to your production domain.
@@ -126,11 +289,12 @@ Product imagery uses **royalty-free Unsplash placeholders** (not trademarked bra
 ---
 
 ## Project Structure
+
 ```
 src/
   app/
     (storefront)/      # public storefront + account
-    (auth)/            # login
+    (auth)/            # login / signup / password
     admin/             # admin console
     api/               # search + webhooks
   components/          # UI, product, cart, admin, account, reviews…
@@ -147,4 +311,4 @@ supabase/
 
 ---
 
-Built with care for the AuraEssence house. Prices in BDT (৳).
+Built with care for the AuraEssence house.
