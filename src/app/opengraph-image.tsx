@@ -29,7 +29,7 @@ export default async function OgImage() {
             textTransform: "uppercase",
           }}
         >
-          Maison de Parfum
+          The Last Note
         </div>
         <div style={{ fontSize: 110, letterSpacing: 8, marginTop: 16 }}>
           {SITE.name.toUpperCase()}

@@ -90,7 +90,7 @@ export function Header({
                 {SITE.name.toUpperCase()}
               </span>
               <span className="mt-0.5 text-[0.5rem] uppercase tracking-[0.45em] text-gold">
-                Maison de Parfum
+                The Last Note
               </span>
             </Link>
 

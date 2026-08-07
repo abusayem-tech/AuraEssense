@@ -32,7 +32,7 @@ export function Footer() {
               {SITE.name.toUpperCase()}
             </p>
             <p className="mt-1 text-[0.6rem] uppercase tracking-[0.4em] text-gold">
-              Maison de Parfum
+              The Last Note
             </p>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">
               A curated house of the world&apos;s finest fragrances, delivered
