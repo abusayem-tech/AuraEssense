@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
@@ -67,9 +66,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Suspense fallback={null}>
-            <RouteProgress />
-          </Suspense>
+          <RouteProgress />
           <NuqsAdapter>{children}</NuqsAdapter>
           <ThemedToaster />
         </ThemeProvider>
