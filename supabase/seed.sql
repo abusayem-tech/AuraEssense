@@ -295,7 +295,9 @@ insert into collections (name, slug, subtitle, description, cover_image, is_feat
   ('Oud & Amber', 'oud-amber', 'Liquid gold', 'Opulent, resinous and unforgettable — our most luxurious warm scents.', 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=1200&q=80', true, 0),
   ('Modern Icons', 'modern-icons', 'The new classics', 'Contemporary masterpieces that define a generation.', 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80', true, 1),
   ('Fresh Escapes', 'fresh-escapes', 'A breath of air', 'Crisp, aquatic and green — perfect for the everyday.', 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=80', true, 2),
-  ('Gifts for Him', 'gifts-for-him', 'Effortless gifting', 'Distinguished scents for the modern gentleman.', 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80', false, 3)
+  ('Gifts for Him', 'gifts-for-him', 'Effortless gifting', 'Distinguished scents for the modern gentleman.', 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80', true, 3),
+  ('Gifts for Her', 'gifts-for-her', 'She will remember', 'Romantic florals and luminous signatures made for gifting.', 'https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=1200&q=80', true, 4),
+  ('Date Night', 'date-night', 'After dark', 'Seductive, intimate compositions for evenings that linger.', 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&w=1200&q=80', false, 5)
 on conflict (slug) do nothing;
 
 insert into collection_products (collection_id, product_id, position)
@@ -304,6 +306,8 @@ where (c.slug='oud-amber' and p.slug in ('tom-ford-oud-wood','tom-ford-tobacco-v
    or (c.slug='modern-icons' and p.slug in ('creed-aventus','le-labo-santal-33','dior-sauvage','chanel-bleu-de-chanel','ysl-black-opium'))
    or (c.slug='fresh-escapes' and p.slug in ('armani-acqua-di-gio','jo-malone-wood-sage-sea-salt','paco-rabanne-invictus','jo-malone-english-pear-freesia'))
    or (c.slug='gifts-for-him' and p.slug in ('dior-sauvage','versace-eros','hermes-terre-dhermes','creed-aventus','chanel-bleu-de-chanel'))
+   or (c.slug='gifts-for-her' and p.slug in ('chanel-coco-mademoiselle','ysl-black-opium','viktor-rolf-flowerbomb','jo-malone-english-pear-freesia','carolina-herrera-good-girl'))
+   or (c.slug='date-night' and p.slug in ('tom-ford-tobacco-vanille','mfk-baccarat-rouge-540','ysl-black-opium','tom-ford-black-orchid','carolina-herrera-good-girl'))
 on conflict do nothing;
 
 -- Pairs with (layering suggestions) -----------------------------------------
