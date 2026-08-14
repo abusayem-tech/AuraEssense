@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { AdminHeader, Table, Th, Td, EmptyRow, LinkButton } from "@/components/admin/admin-ui";
 import { Badge } from "@/components/ui/badge";
 import { ProductImage } from "@/components/product/product-image";
+import { ProductRowActions } from "@/components/admin/delete-product-button";
 import { createClient } from "@/lib/supabase/server";
 import { formatBDT } from "@/lib/format";
 import { fromPrice, totalStock } from "@/lib/pricing";
@@ -35,11 +36,12 @@ export default async function AdminProductsPage() {
             <Th>Price from</Th>
             <Th>Stock</Th>
             <Th>Status</Th>
+            <Th className="text-right">Actions</Th>
           </tr>
         </thead>
         <tbody>
           {products.length === 0 ? (
-            <EmptyRow colSpan={5} label="No products yet." />
+            <EmptyRow colSpan={6} label="No products yet." />
           ) : (
             products.map((p) => {
               const stock = totalStock(p);
@@ -62,6 +64,9 @@ export default async function AdminProductsPage() {
                     ) : (
                       <Badge variant="muted">Hidden</Badge>
                     )}
+                  </Td>
+                  <Td className="text-right">
+                    <ProductRowActions productId={p.id} />
                   </Td>
                 </tr>
               );

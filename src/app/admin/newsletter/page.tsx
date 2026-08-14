@@ -1,4 +1,5 @@
 import { AdminHeader, Table, Th, Td, EmptyRow, StatCard } from "@/components/admin/admin-ui";
+import { DeleteSubscriberButton } from "@/components/admin/delete-subscriber-button";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/format";
 
@@ -44,17 +45,21 @@ export default async function NewsletterPage() {
             <Th>Email</Th>
             <Th>Source</Th>
             <Th>Subscribed</Th>
+            <Th className="text-right">Actions</Th>
           </tr>
         </thead>
         <tbody>
           {subs.length === 0 ? (
-            <EmptyRow colSpan={3} label="No subscribers yet." />
+            <EmptyRow colSpan={4} label="No subscribers yet." />
           ) : (
             subs.map((s) => (
               <tr key={s.id}>
                 <Td className="text-ivory">{s.email}</Td>
                 <Td className="capitalize">{s.source ?? "—"}</Td>
                 <Td>{formatDate(s.created_at)}</Td>
+                <Td className="text-right">
+                  <DeleteSubscriberButton id={s.id} />
+                </Td>
               </tr>
             ))
           )}

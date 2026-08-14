@@ -19,16 +19,17 @@ export interface QuizResult {
 }
 
 /**
- * Weighted matching (REQ-5): score active, in-stock products against the
- * accumulated family and note weights from the quiz, return the top 3.
+ * Score active, in-stock products against quiz answers: fragrance families,
+ * notes, specific perfumes, and collections picked in admin.
  */
 export async function getQuizRecommendations(
   familyWeights: Record<string, number>,
   noteWeights: Record<string, number>,
+  productIds: string[] = [],
+  collectionIds: string[] = [],
 ): Promise<QuizResult[]> {
   const supabase = await createClient();
 
-  // Resolve family slugs -> ids for matching.
   const { data: families } = await supabase
     .from("fragrance_families")
     .select("id, slug, name");
@@ -46,6 +47,19 @@ export async function getQuizRecommendations(
 
   const products = (data as unknown as Product[]) ?? [];
   const noteKeys = Object.keys(noteWeights).map((n) => n.toLowerCase());
+  const directProducts = new Set(productIds);
+  const collectionSet = new Set(collectionIds);
+
+  const inCollections = new Set<string>();
+  if (collectionSet.size > 0) {
+    const { data: links } = await supabase
+      .from("collection_products")
+      .select("product_id, collection_id")
+      .in("collection_id", [...collectionSet]);
+    for (const row of (links ?? []) as Array<{ product_id: string; collection_id: string }>) {
+      if (collectionSet.has(row.collection_id)) inCollections.add(row.product_id);
+    }
+  }
 
   const scored = products
     .filter((p) => totalStock(p) > 0)
@@ -53,10 +67,20 @@ export async function getQuizRecommendations(
       let score = 0;
       let reason = "";
 
+      if (directProducts.has(p.id)) {
+        score += 12;
+        reason = "Picked to match your answers";
+      }
+
+      if (inCollections.has(p.id)) {
+        score += 5;
+        if (!reason) reason = "From a collection that matches your taste";
+      }
+
       const fam = p.family_id ? familyById.get(p.family_id) : undefined;
       if (fam && familyWeights[fam.slug]) {
         score += familyWeights[fam.slug] * 3;
-        reason = `A ${fam.name.toLowerCase()} signature matched to your taste`;
+        if (!reason) reason = `A ${fam.name.toLowerCase()} signature matched to your taste`;
       }
 
       const allNotes = [
@@ -71,7 +95,6 @@ export async function getQuizRecommendations(
         }
       }
 
-      // Gentle boost for highly-rated and featured picks.
       score += p.rating_avg * 0.5;
       if (p.is_featured) score += 0.5;
 

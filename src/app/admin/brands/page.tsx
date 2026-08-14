@@ -23,6 +23,7 @@ export default async function AdminBrandsPage() {
         { name: "slug", label: "Slug", placeholder: "auto-generated if blank" },
         { name: "country", label: "Country" },
         { name: "logo_url", label: "Logo URL" },
+        { name: "hero_image", label: "Hero image URL" },
         { name: "description", label: "Description", type: "textarea" },
       ]}
       saveAction={saveBrand}

@@ -1,36 +1,63 @@
-import { EntityManager } from "@/components/admin/entity-manager";
+import Link from "next/link";
+import { Plus } from "lucide-react";
+import { AdminHeader, Table, Th, Td, EmptyRow, LinkButton } from "@/components/admin/admin-ui";
+import { Badge } from "@/components/ui/badge";
+import { CollectionRowActions } from "@/components/admin/collection-row-actions";
 import { createClient } from "@/lib/supabase/server";
-import { saveCollection, deleteCollection } from "@/lib/actions/admin/catalog";
 import type { Collection } from "@/types";
 
 export default async function AdminCollectionsPage() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("collections")
-    .select("*")
-    .order("position");
+  const { data } = await supabase.from("collections").select("*").order("position");
   const collections = (data as unknown as Collection[]) ?? [];
 
   return (
-    <EntityManager<Collection>
-      title="Collections"
-      singular="Collection"
-      items={collections}
-      columns={[
-        { key: "name", label: "Name" },
-        { key: "subtitle", label: "Subtitle" },
-        { key: "is_featured", label: "Featured", format: "badge-featured" },
-      ]}
-      fields={[
-        { name: "name", label: "Name", required: true },
-        { name: "slug", label: "Slug", placeholder: "auto-generated if blank" },
-        { name: "subtitle", label: "Subtitle" },
-        { name: "cover_image", label: "Cover Image URL" },
-        { name: "description", label: "Description", type: "textarea" },
-        { name: "is_featured", label: "Feature on homepage", type: "checkbox" },
-      ]}
-      saveAction={saveCollection}
-      deleteAction={deleteCollection}
-    />
+    <div>
+      <AdminHeader
+        title="Collections"
+        description="Curated sets shown on the storefront. Add perfumes on each collection."
+        action={
+          <LinkButton href="/admin/collections/new">
+            <Plus size={14} /> New Collection
+          </LinkButton>
+        }
+      />
+      <Table>
+        <thead>
+          <tr>
+            <Th>Name</Th>
+            <Th>Subtitle</Th>
+            <Th>Featured</Th>
+            <Th className="text-right">Actions</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {collections.length === 0 ? (
+            <EmptyRow colSpan={4} label="No collections yet." />
+          ) : (
+            collections.map((c) => (
+              <tr key={c.id}>
+                <Td>
+                  <Link href={`/admin/collections/${c.id}`} className="text-ivory hover:text-gold">
+                    {c.name}
+                  </Link>
+                </Td>
+                <Td>{c.subtitle ?? "—"}</Td>
+                <Td>
+                  {c.is_featured ? (
+                    <Badge variant="gold">Featured</Badge>
+                  ) : (
+                    "—"
+                  )}
+                </Td>
+                <Td className="text-right">
+                  <CollectionRowActions collectionId={c.id} />
+                </Td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </Table>
+    </div>
   );
 }

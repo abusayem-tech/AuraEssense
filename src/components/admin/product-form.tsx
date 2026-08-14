@@ -8,21 +8,30 @@ import { Button } from "@/components/ui/button";
 import { Input, Textarea, Label } from "@/components/ui/input";
 import { saveProduct } from "@/lib/actions/admin/catalog";
 import { GENDERS, CONCENTRATIONS } from "@/lib/constants";
-import type { Brand, FragranceFamily, Product } from "@/types";
+import { ProductMultiSelect } from "@/components/admin/product-relations";
+import type { Brand, CatalogPick, FragranceFamily, Product } from "@/types";
 
 export function ProductForm({
   product,
   brands,
   families,
+  catalog,
+  pairingIds = [],
+  suggestedIds = [],
 }: {
   product?: Product;
   brands: Brand[];
   families: FragranceFamily[];
+  catalog: CatalogPick[];
+  pairingIds?: string[];
+  suggestedIds?: string[];
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [active, setActive] = useState(product?.is_active ?? true);
   const [featured, setFeatured] = useState(product?.is_featured ?? false);
+  const [layering, setLayering] = useState(pairingIds);
+  const [suggested, setSuggested] = useState(suggestedIds);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,11 +39,13 @@ export function ProductForm({
     if (product) fd.set("id", product.id);
     if (active) fd.set("is_active", "on");
     if (featured) fd.set("is_featured", "on");
+    for (const id of layering) fd.append("pairing_ids", id);
+    for (const id of suggested) fd.append("suggested_ids", id);
     start(async () => {
       const res = await saveProduct(fd);
       if (res.ok) {
         toast.success("Product saved");
-        if (!product && res.id) router.push(`/admin/products/${res.id}`);
+        if (!product) router.push("/admin/products");
         else router.refresh();
       } else toast.error(res.error ?? "Could not save.");
     });
@@ -132,6 +143,30 @@ export function ProductForm({
         <label className="flex items-center gap-2 text-sm text-ivory-dim">
           <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="accent-[var(--gold)]" /> Featured
         </label>
+      </div>
+
+      <div className="space-y-5 border-t border-line pt-5">
+        <div>
+          <h2 className="font-display text-xl text-ivory">Customer recommendations</h2>
+          <p className="mt-1 text-sm text-muted">
+            Pick existing perfumes to show on this product page so customers can browse and add more
+            to their bag.
+          </p>
+        </div>
+        <ProductMultiSelect
+          label="Layering perfumes"
+          hint="Shown as “Pairs Beautifully With”"
+          catalog={catalog}
+          selectedIds={layering}
+          onChange={setLayering}
+        />
+        <ProductMultiSelect
+          label="Suggested perfumes"
+          hint="Shown as “You May Also Like”"
+          catalog={catalog}
+          selectedIds={suggested}
+          onChange={setSuggested}
+        />
       </div>
 
       <Button type="submit" disabled={pending}>

@@ -73,6 +73,12 @@ export interface Product {
   variants?: ProductVariant[];
 }
 
+export interface CatalogPick {
+  id: string;
+  name: string;
+  brandName: string | null;
+}
+
 export interface Collection {
   id: string;
   name: string;
@@ -183,6 +189,7 @@ export interface Review {
   is_verified_purchase: boolean;
   photo_urls: string[];
   status: "pending" | "approved" | "rejected";
+  is_hidden: boolean;
   helpful_count: number;
   created_at: string;
   author_name?: string;

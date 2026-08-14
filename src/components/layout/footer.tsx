@@ -21,7 +21,15 @@ function FacebookIcon({ size = 17 }: { size?: number }) {
   );
 }
 
-export function Footer() {
+export function Footer({
+  storeName = SITE.name,
+  contactEmail = SITE.email,
+  contactPhone = SITE.phone,
+}: {
+  storeName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+}) {
   return (
     <footer className="relative z-10 mt-24 border-t border-line bg-onyx-soft">
       <Container className="py-16">
@@ -29,7 +37,7 @@ export function Footer() {
           {/* Brand + newsletter */}
           <div className="lg:col-span-4">
             <p className="font-display text-3xl tracking-[0.12em] text-ivory">
-              {SITE.name.toUpperCase()}
+              {storeName.toUpperCase()}
             </p>
             <p className="mt-1 text-[0.6rem] uppercase tracking-[0.4em] text-gold">
               The Last Note
@@ -37,6 +45,11 @@ export function Footer() {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">
               A curated house of the world&apos;s finest fragrances, delivered
               across Bangladesh.
+            </p>
+            <p className="mt-4 text-sm text-ivory-dim">
+              {contactEmail}
+              <span className="mx-2 text-muted">·</span>
+              {contactPhone}
             </p>
             <div className="mt-7 max-w-xs">
               <p className="eyebrow !mb-3">Join the House</p>
@@ -68,7 +81,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-line pt-8 sm:flex-row">
           <p className="text-xs text-muted">
-            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            © {new Date().getFullYear()} {storeName}. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             <Link

@@ -44,9 +44,16 @@ export async function saveGiftCard(formData: FormData): Promise<{ ok: boolean; e
   const code = String(formData.get("code") || "").toUpperCase().trim();
   if (!code) return { ok: false, error: "Code required." };
   if (id) {
+    const balanceRaw = formData.get("balance");
+    const balance = balanceRaw === null || String(balanceRaw) === "" ? amount : Number(balanceRaw);
     await supabase
       .from("gift_cards")
-      .update({ code, status: String(formData.get("status") || "active") })
+      .update({
+        code,
+        status: String(formData.get("status") || "active"),
+        initial_amount: amount,
+        balance,
+      })
       .eq("id", id);
   } else {
     await supabase.from("gift_cards").insert({ code, initial_amount: amount, balance: amount });
@@ -75,6 +82,7 @@ export async function saveBanner(formData: FormData): Promise<{ ok: boolean }> {
     image: String(formData.get("image") || "") || null,
     link: String(formData.get("link") || "") || null,
     cta_label: String(formData.get("cta_label") || "") || null,
+    position: Number(formData.get("position") || 0),
     active: formData.get("active") === "on",
   };
   if (id) await supabase.from("banners").update(payload).eq("id", id);
@@ -96,22 +104,60 @@ export async function deleteBanner(id: string): Promise<{ ok: boolean }> {
 }
 
 /* ------------------------------- Reviews --------------------------------- */
+async function reviewProductSlug(
+  supabase: ReturnType<typeof createAdminClient>,
+  reviewId: string,
+): Promise<string | null> {
+  const { data } = await supabase
+    .from("reviews")
+    .select("product:products(slug)")
+    .eq("id", reviewId)
+    .maybeSingle();
+  return (data as { product: { slug: string } | null } | null)?.product?.slug ?? null;
+}
+
 export async function moderateReview(
   id: string,
   status: "approved" | "rejected" | "pending",
 ): Promise<{ ok: boolean }> {
   const ctx = await requireAdmin();
   const supabase = createAdminClient();
+  const slug = await reviewProductSlug(supabase, id);
   await supabase.from("reviews").update({ status }).eq("id", id);
   await logAudit(ctx, "moderate", "review", id, { status });
   revalidatePath("/admin/reviews");
+  if (slug) revalidatePath(`/fragrances/${slug}`);
+  return { ok: true };
+}
+
+export async function setReviewHidden(
+  id: string,
+  hidden: boolean,
+): Promise<{ ok: boolean }> {
+  const ctx = await requireAdmin();
+  const supabase = createAdminClient();
+  const slug = await reviewProductSlug(supabase, id);
+  await supabase.from("reviews").update({ is_hidden: hidden }).eq("id", id);
+  await logAudit(ctx, hidden ? "hide" : "unhide", "review", id, { hidden });
+  revalidatePath("/admin/reviews");
+  if (slug) revalidatePath(`/fragrances/${slug}`);
   return { ok: true };
 }
 
 export async function deleteReview(id: string): Promise<{ ok: boolean }> {
   await requireAdmin();
   const supabase = createAdminClient();
+  const slug = await reviewProductSlug(supabase, id);
   await supabase.from("reviews").delete().eq("id", id);
   revalidatePath("/admin/reviews");
+  if (slug) revalidatePath(`/fragrances/${slug}`);
+  return { ok: true };
+}
+
+export async function deleteSubscriber(id: string): Promise<{ ok: boolean }> {
+  await requireAdmin();
+  const supabase = createAdminClient();
+  await supabase.from("newsletter_subscribers").delete().eq("id", id);
+  revalidatePath("/admin/newsletter");
   return { ok: true };
 }

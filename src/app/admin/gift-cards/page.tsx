@@ -30,6 +30,7 @@ export default async function GiftCardsPage() {
           placeholder: "GIFT-AURA-5000",
         },
         { name: "initial_amount", label: "Amount (BDT)", type: "number" },
+        { name: "balance", label: "Balance (BDT)", type: "number" },
         {
           name: "status",
           label: "Status",

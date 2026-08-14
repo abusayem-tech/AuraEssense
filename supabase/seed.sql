@@ -310,13 +310,54 @@ where (c.slug='oud-amber' and p.slug in ('tom-ford-oud-wood','tom-ford-tobacco-v
    or (c.slug='date-night' and p.slug in ('tom-ford-tobacco-vanille','mfk-baccarat-rouge-540','ysl-black-opium','tom-ford-black-orchid','carolina-herrera-good-girl'))
 on conflict do nothing;
 
--- Pairs with (layering suggestions) -----------------------------------------
-insert into pairs_with (product_id, related_product_id)
-select a.id, b.id from products a, products b
+-- Pairs with (layering) — curated first, then fill any product still missing a partner
+insert into pairs_with (product_id, related_product_id, position)
+select a.id, b.id, 0 from products a, products b
 where (a.slug='tom-ford-oud-wood' and b.slug='tom-ford-tobacco-vanille')
    or (a.slug='le-labo-santal-33' and b.slug='byredo-gypsy-water')
    or (a.slug='mfk-baccarat-rouge-540' and b.slug='tom-ford-black-orchid')
    or (a.slug='chanel-coco-mademoiselle' and b.slug='viktor-rolf-flowerbomb')
+on conflict do nothing;
+
+insert into pairs_with (product_id, related_product_id, position)
+select product_id, other_id, 0
+from (
+  select
+    a.id as product_id,
+    b.id as other_id,
+    row_number() over (
+      partition by a.id
+      order by
+        case when a.family_id is distinct from b.family_id then 0 else 1 end,
+        b.name
+    ) as rn
+  from products a
+  join products b on a.id <> b.id
+) ranked
+where rn = 1
+  and not exists (select 1 from pairs_with pw where pw.product_id = ranked.product_id)
+on conflict do nothing;
+
+-- Suggested / related — same family first, then any other product
+insert into suggested_products (product_id, suggested_product_id, position)
+select product_id, other_id, 0
+from (
+  select
+    a.id as product_id,
+    b.id as other_id,
+    row_number() over (
+      partition by a.id
+      order by
+        case when a.family_id is not distinct from b.family_id then 0 else 1 end,
+        b.name
+    ) as rn
+  from products a
+  join products b on a.id <> b.id
+) ranked
+where rn = 1
+  and not exists (
+    select 1 from suggested_products sp where sp.product_id = ranked.product_id
+  )
 on conflict do nothing;
 
 -- Promo codes ---------------------------------------------------------------

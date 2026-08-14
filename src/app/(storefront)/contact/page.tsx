@@ -4,13 +4,16 @@ import { Container } from "@/components/ui/misc";
 import { PageHeader } from "@/components/ui/page-header";
 import { ContactForm } from "@/components/contact-form";
 import { SITE } from "@/lib/constants";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Reach the AuraEssence concierge.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSettings();
+
   return (
     <>
       <PageHeader
@@ -21,8 +24,8 @@ export default function ContactPage() {
       <Container className="my-10 grid gap-10 md:my-16 md:gap-12 lg:grid-cols-2">
         <div className="space-y-8">
           {[
-            { icon: Mail, label: "Email", value: SITE.email },
-            { icon: Phone, label: "Phone", value: SITE.phone },
+            { icon: Mail, label: "Email", value: settings.contactEmail || SITE.email },
+            { icon: Phone, label: "Phone", value: settings.contactPhone || SITE.phone },
             { icon: MapPin, label: "Boutique", value: SITE.address },
           ].map((c) => (
             <div key={c.label} className="flex items-start gap-4">

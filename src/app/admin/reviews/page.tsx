@@ -11,6 +11,7 @@ interface ReviewRow {
   title: string | null;
   body: string | null;
   status: string;
+  is_hidden: boolean;
   is_verified_purchase: boolean;
   created_at: string;
   product: { name: string } | null;
@@ -46,7 +47,7 @@ export default async function AdminReviewsPage() {
             <EmptyRow colSpan={5} label="No reviews yet." />
           ) : (
             reviews.map((r) => (
-              <tr key={r.id}>
+              <tr key={r.id} className={r.is_hidden ? "opacity-50" : undefined}>
                 <Td className="text-ivory">{r.product?.name}</Td>
                 <Td>
                   <Rating value={r.rating} showCount={false} size={12} />
@@ -59,15 +60,18 @@ export default async function AdminReviewsPage() {
                   <p className="text-xs text-muted">{formatDate(r.created_at)}</p>
                 </Td>
                 <Td>
-                  {r.status === "approved" ? (
-                    <Badge variant="emerald">Approved</Badge>
-                  ) : r.status === "rejected" ? (
-                    <Badge variant="rose">Rejected</Badge>
-                  ) : (
-                    <Badge variant="gold">Pending</Badge>
-                  )}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {r.status === "approved" ? (
+                      <Badge variant="emerald">Approved</Badge>
+                    ) : r.status === "rejected" ? (
+                      <Badge variant="rose">Rejected</Badge>
+                    ) : (
+                      <Badge variant="gold">Pending</Badge>
+                    )}
+                    {r.is_hidden && <Badge variant="muted">Hidden</Badge>}
+                  </div>
                 </Td>
-                <Td className="text-right"><div className="flex justify-end"><ReviewModeration id={r.id} status={r.status} /></div></Td>
+                <Td className="text-right"><div className="flex justify-end"><ReviewModeration id={r.id} status={r.status} isHidden={r.is_hidden} /></div></Td>
               </tr>
             ))
           )}

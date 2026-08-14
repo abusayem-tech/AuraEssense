@@ -6,7 +6,7 @@ import { ProductForm } from "@/components/admin/product-form";
 import { VariantManager, ImageManager } from "@/components/admin/variant-image-manager";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import { createClient } from "@/lib/supabase/server";
-import { getBrands, getFamilies } from "@/lib/queries";
+import { getBrands, getCatalogPicks, getFamilies, getProductRelationIds } from "@/lib/queries";
 import type { Product } from "@/types";
 
 export default async function EditProductPage({
@@ -16,7 +16,7 @@ export default async function EditProductPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
-  const [{ data }, brands, families] = await Promise.all([
+  const [{ data }, brands, families, catalog, relations] = await Promise.all([
     supabase
       .from("products")
       .select("*, variants:product_variants(*), images:product_images(*)")
@@ -24,6 +24,8 @@ export default async function EditProductPage({
       .maybeSingle(),
     getBrands(),
     getFamilies(),
+    getCatalogPicks(id),
+    getProductRelationIds(id),
   ]);
   const product = data as unknown as Product | null;
   if (!product) notFound();
@@ -45,7 +47,14 @@ export default async function EditProductPage({
 
       <div className="space-y-6">
         <Card>
-          <ProductForm product={product} brands={brands} families={families} />
+          <ProductForm
+            product={product}
+            brands={brands}
+            families={families}
+            catalog={catalog}
+            pairingIds={relations.pairingIds}
+            suggestedIds={relations.suggestedIds}
+          />
         </Card>
         <Card>
           <VariantManager productId={product.id} variants={variants} />

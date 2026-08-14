@@ -31,6 +31,7 @@ export default async function BannersPage() {
         { name: "image", label: "Image URL" },
         { name: "link", label: "Link" },
         { name: "cta_label", label: "CTA Label" },
+        { name: "position", label: "Display order", type: "number" },
         { name: "active", label: "Active", type: "checkbox", defaultValue: "on" },
       ]}
       saveAction={saveBanner}

@@ -25,6 +25,9 @@ export async function saveSettings(formData: FormData): Promise<{ ok: boolean }>
   await supabase.from("store_settings").upsert(payload, { onConflict: "id" });
   await logAudit(ctx, "update", "store_settings", "singleton");
   revalidatePath("/admin/settings");
+  revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/contact");
   return { ok: true };
 }
 
@@ -41,6 +44,8 @@ export async function saveShippingZone(formData: FormData): Promise<{ ok: boolea
     })
     .eq("id", id);
   revalidatePath("/admin/settings");
+  revalidatePath("/", "layout");
+  revalidatePath("/");
   return { ok: true };
 }
 

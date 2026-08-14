@@ -1,11 +1,21 @@
 "use client";
 
 import { useTransition } from "react";
-import { Check, X, Trash2, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Check, X, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { moderateReview, deleteReview } from "@/lib/actions/admin/marketing";
+import { moderateReview, deleteReview, setReviewHidden } from "@/lib/actions/admin/marketing";
 
-export function ReviewModeration({ id, status }: { id: string; status: string }) {
+export function ReviewModeration({
+  id,
+  status,
+  isHidden,
+}: {
+  id: string;
+  status: string;
+  isHidden: boolean;
+}) {
+  const router = useRouter();
   const [pending, start] = useTransition();
 
   return (
@@ -28,6 +38,20 @@ export function ReviewModeration({ id, status }: { id: string; status: string })
           <X size={12} /> Reject
         </button>
       )}
+      <button
+        onClick={() =>
+          start(async () => {
+            await setReviewHidden(id, !isHidden);
+            toast.success(isHidden ? "Unhidden" : "Hidden from storefront");
+            router.refresh();
+          })
+        }
+        disabled={pending}
+        className="flex items-center gap-1 border border-line-strong px-2 py-1 text-xs text-ivory-dim hover:text-gold"
+      >
+        {isHidden ? <Eye size={12} /> : <EyeOff size={12} />}
+        {isHidden ? "Unhide" : "Hide"}
+      </button>
       <button
         onClick={() => {
           if (!confirm("Delete this review permanently?")) return;

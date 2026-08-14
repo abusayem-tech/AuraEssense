@@ -24,7 +24,11 @@ export default async function StorefrontLayout({
         banners={banners}
       />
       <main className="relative z-10 flex-1">{children}</main>
-      <Footer />
+      <Footer
+        storeName={settings.storeName}
+        contactEmail={settings.contactEmail}
+        contactPhone={settings.contactPhone}
+      />
       <CartSheet freeShipThreshold={settings.freeShipThreshold} />
     </>
   );

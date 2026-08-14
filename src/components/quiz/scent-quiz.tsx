@@ -7,23 +7,11 @@ import { Loader2, RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product/product-card";
 import { getQuizRecommendations, type QuizResult } from "@/lib/actions/quiz";
+import { unpackQuizTargets } from "@/lib/quiz-targets";
 import { cn } from "@/lib/utils";
+import type { QuizQuestion } from "@/types";
 
-interface QOption {
-  id: string;
-  label: string;
-  description: string | null;
-  family_weights: Record<string, number>;
-  note_weights: Record<string, number>;
-}
-interface Question {
-  id: string;
-  prompt: string;
-  subtitle: string | null;
-  options: QOption[];
-}
-
-export function ScentQuiz({ questions }: { questions: Question[] }) {
+export function ScentQuiz({ questions }: { questions: QuizQuestion[] }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -33,8 +21,8 @@ export function ScentQuiz({ questions }: { questions: Question[] }) {
   const current = questions[step];
   const progress = ((step + (results ? 1 : 0)) / total) * 100;
 
-  async function choose(option: QOption) {
-    const nextAnswers = { ...answers, [current.id]: option.id };
+  async function choose(optionId: string) {
+    const nextAnswers = { ...answers, [current.id]: optionId };
     setAnswers(nextAnswers);
 
     if (step < total - 1) {
@@ -42,20 +30,31 @@ export function ScentQuiz({ questions }: { questions: Question[] }) {
       return;
     }
 
-    // Compute weights and fetch recommendations.
     setLoading(true);
     const familyWeights: Record<string, number> = {};
     const noteWeights: Record<string, number> = {};
+    const productIds: string[] = [];
+    const collectionIds: string[] = [];
     for (const q of questions) {
       const optId = nextAnswers[q.id];
       const opt = q.options.find((o) => o.id === optId);
       if (!opt) continue;
-      for (const [k, v] of Object.entries(opt.family_weights ?? {}))
-        familyWeights[k] = (familyWeights[k] ?? 0) + Number(v);
-      for (const [k, v] of Object.entries(opt.note_weights ?? {}))
+      const targets = unpackQuizTargets(opt.family_weights);
+      for (const slug of targets.familySlugs) {
+        familyWeights[slug] = (familyWeights[slug] ?? 0) + targets.strength;
+      }
+      for (const [k, v] of Object.entries(opt.note_weights ?? {})) {
         noteWeights[k] = (noteWeights[k] ?? 0) + Number(v);
+      }
+      productIds.push(...targets.productIds);
+      collectionIds.push(...targets.collectionIds);
     }
-    const res = await getQuizRecommendations(familyWeights, noteWeights);
+    const res = await getQuizRecommendations(
+      familyWeights,
+      noteWeights,
+      productIds,
+      collectionIds,
+    );
     setResults(res);
     setLoading(false);
   }
@@ -165,7 +164,7 @@ export function ScentQuiz({ questions }: { questions: Question[] }) {
             {current.options.map((opt) => (
               <button
                 key={opt.id}
-                onClick={() => choose(opt)}
+                onClick={() => choose(opt.id)}
                 className={cn(
                   "group border border-line-strong p-6 text-left transition-all hover:border-gold hover:bg-gold/10",
                   answers[current.id] === opt.id &&
