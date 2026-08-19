@@ -14,8 +14,9 @@ export class PaperflyProvider implements LogisticsProvider {
 
   private apiKey = process.env.PAPERFLY_API_KEY ?? "";
 
-  async createShipment(_input: ShipmentInput): Promise<ShipmentResult> {
+  async createShipment(input: ShipmentInput): Promise<ShipmentResult> {
     void this.apiKey;
+    void input;
     return {
       ok: false,
       error:

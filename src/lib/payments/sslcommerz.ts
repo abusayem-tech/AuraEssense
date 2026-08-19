@@ -18,16 +18,18 @@ export class SslCommerzeGateway implements PaymentGateway {
   private storePassword = process.env.SSLCOMMERZ_STORE_PASSWORD ?? "";
   private sandbox = process.env.SSLCOMMERZ_SANDBOX !== "false";
 
-  async createSession(_input: PaymentSessionInput): Promise<PaymentSession> {
+  async createSession(input: PaymentSessionInput): Promise<PaymentSession> {
     void this.storeId;
     void this.storePassword;
     void this.sandbox;
+    void input;
     throw new Error(
       "SslCommerzeGateway.createSession not implemented. Set PAYMENT_PROVIDER=mock or implement the live integration.",
     );
   }
 
-  async verifyIpn(_payload: Record<string, string>): Promise<IpnResult> {
+  async verifyIpn(payload: Record<string, string>): Promise<IpnResult> {
+    void payload;
     throw new Error("SslCommerzeGateway.verifyIpn not implemented.");
   }
 }

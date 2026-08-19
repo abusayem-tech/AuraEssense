@@ -207,7 +207,7 @@ Apply the SQL in order via the **Supabase MCP** (recommended) or the SQL editor 
 2. `supabase/migrations/0002_rls.sql` — Row Level Security policies
 3. `supabase/seed.sql` — real fragrances, brands, collections, quiz, promos, journal
 
-> Using the Supabase MCP: ask the agent to apply each migration with `apply_migration`, then run the seed. Afterwards, `gen types` can replace `src/lib/supabase/types.ts` for stronger typing.
+> If you use Supabase MCP, apply each migration in order and then run the seed. Afterwards, generate fresh types to replace `src/lib/supabase/types.ts` for stronger typing.
 
 ### 3. Environment
 ```bash
