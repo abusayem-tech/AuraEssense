@@ -1,5 +1,20 @@
 # AuraEssence — Luxury Perfume E-Commerce
 
+**Developer:** Md. Abu Sayem · ID: 4386 · Batch: 66C
+
+**Live site:** [https://auraessense.vercel.app](https://auraessense.vercel.app)
+
+### Demo logins
+
+| Role | Email | Password |
+|---|---|---|
+| Customer | `customer@auraessence.demo` | `DemoCustomer2026!` |
+| Admin | `admin@auraessence.demo` | `DemoAdmin2026!` |
+
+Sign in at [/login](https://auraessense.vercel.app/login). Admin console: [/admin](https://auraessense.vercel.app/admin).
+
+---
+
 A dark-luxury perfume e-commerce platform for the Bangladeshi market, built with **Next.js 16 (App Router)**, **Supabase** (PostgreSQL, Auth, Storage, RLS), **Tailwind CSS v4**, and deployable on **Vercel**.
 
 Prices in **BDT (৳)**. Payments (**SSL Commerze**) and logistics (**Paperfly**) are mocked by default behind swappable interfaces.
